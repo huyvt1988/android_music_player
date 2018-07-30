@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activity.act_list_song"
+    android:orientation="vertical"
+    android:background="@mipmap/background">
+
+    <Toolbar
+        android:id="@+id/toolbar_list"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary">
+
+        <RelativeLayout
+            android:id="@+id/txt_toolbar_list"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingEnd="10dp">
+            <TextView
+                android:text="NTQ Music"
+                android:textColor="@color/white"
+                android:textSize="@dimen/TitleToolbar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <ImageView
+                android:id="@+id/img_setting_list"
+                android:src="@mipmap/setting_icon"
+                android:foregroundGravity="right"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_alignParentRight="true"
+                />
+        </RelativeLayout>
+    </Toolbar>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <Button
+            android:id="@+id/btn_sort_by_name"
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:text="Songs"
+            />
+        <Button
+            android:id="@+id/btn_sort_by_folder"
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:text="Folder"/>
+    </LinearLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/revw_song"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="6">
+    </android.support.v7.widget.RecyclerView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="horizontal"
+        android:background="@mipmap/player_mini"
+        >
+        <ImageView
+            android:id="@+id/img_song_list"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:padding="5sp"
+            android:src="@mipmap/icon_song"/>
+        <LinearLayout
+            android:id="@+id/lt_title_mini"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/txt_song_name_list"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Song name"
+                android:textColor="@color/white"
+                android:textSize="@dimen/SongTitle" />
+            <TextView
+                android:id="@+id/txt_singer_list"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:textSize="@dimen/SongSinger"
+                android:text="Singer"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:gravity="center">
+            <ImageButton
+                android:id="@+id/btn_prev_mini"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:src="@mipmap/av_previous"/>
+            <ImageButton
+                android:id="@+id/btn_play_mini"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:src="@mipmap/av_play"/>
+            <ImageButton
+                android:id="@+id/btn_next_mini"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:src="@mipmap/av_next"/>
+
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

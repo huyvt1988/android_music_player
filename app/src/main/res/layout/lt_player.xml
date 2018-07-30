@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@mipmap/background"
+    android:id="@+id/lt_player">
+
+    <Toolbar
+        android:id="@+id/toolbar_list"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary">
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingEnd="10dp">
+
+            <TextView
+                android:id="@+id/txt_song_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Song title"
+                android:textColor="@color/white"
+                android:textSize="@dimen/TitleToolbar" />
+
+            <ImageView
+                android:id="@+id/img_setting_player"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_alignParentEnd="true"
+                android:foregroundGravity="right"
+                android:src="@mipmap/setting_icon" />
+        </RelativeLayout>
+    </Toolbar>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0sp"
+        android:layout_weight="2"
+        android:padding="10sp">
+
+        <TextView
+            android:id="@+id/txt_lyric"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:textSize="@dimen/SongTitle"
+            android:gravity="center"/>
+    </ScrollView>
+
+    <LinearLayout
+        android:id="@+id/lt_controller"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0sp"
+            android:layout_weight="2"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/txt_song_name_player"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Song name"
+                android:textColor="@color/white"
+                android:textSize="@dimen/SongTitle" />
+
+            <TextView
+
+                android:id="@+id/txt_singer_player"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Singer"
+                android:textColor="@color/white"
+                android:textSize="@dimen/SongSinger" />
+        </LinearLayout>
+
+        <!--<RelativeLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="0sp"-->
+            <!--android:layout_weight="2">-->
+
+            <!--<SeekBar-->
+                <!--android:id="@+id/skb_player"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_alignParentBottom="true"-->
+                <!--android:layout_marginStart="10sp"-->
+                <!--android:layout_marginEnd="10sp"-->
+                <!--/>-->
+
+            <!--<TextView-->
+                <!--android:id="@+id/txt_time_song"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_above="@+id/skb_player"-->
+                <!--android:layout_alignParentStart="true"-->
+                <!--android:layout_marginStart="10sp"-->
+                <!--android:text="00:00"-->
+                <!--android:textColor="@color/white"-->
+                <!--android:textSize="20sp" />-->
+
+            <!--<TextView-->
+                <!--android:id="@+id/txt_time_total"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_above="@+id/skb_player"-->
+                <!--android:layout_alignParentEnd="true"-->
+                <!--android:layout_marginEnd="10sp"-->
+                <!--android:text="00:00"-->
+                <!--android:textAppearance="@style/TextAppearance.AppCompat"-->
+                <!--android:textColor="@color/white"-->
+                <!--android:textSize="20sp" />-->
+        <!--</RelativeLayout>-->
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="0sp"
+            android:layout_gravity="center"
+            android:layout_weight="2"
+            android:gravity="center">
+
+            <ImageButton
+                android:id="@+id/btn_prev"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:src="@mipmap/av_previous" />
+
+            <ImageButton
+                android:id="@+id/btn_play"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:src="@mipmap/av_play" />
+
+            <ImageButton
+                android:id="@+id/btn_next"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:src="@mipmap/av_next" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>
