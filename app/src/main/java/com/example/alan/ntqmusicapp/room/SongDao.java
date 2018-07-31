@@ -17,4 +17,7 @@ public interface SongDao {
 
     @Query("Select * From song")
     List<SongEntity> getAllSong();
+
+    @Query("Select * From song Order By song_name ASC")
+    List<SongEntity> getAllSongByName();
 }

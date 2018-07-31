@@ -1,6 +1,8 @@
 package com.example.alan.ntqmusicapp.activity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -16,21 +18,23 @@ import com.example.alan.ntqmusicapp.room.SongEntity;
 import com.example.alan.ntqmusicapp.service.MusicService;
 
 
-public class act_player extends AppCompatActivity {
-    TextView txt_song_title, txt_lyric, txt_song_name_player, txt_singer_player, txt_time_song, txt_time_total;
-    ImageView img_setting_player;
-    ImageButton btn_prev, btn_play, btn_next;
-    SeekBar skb_player;
+public class ActivityPlayer extends AppCompatActivity {
+    private TextView txt_song_title, txt_lyric, txt_song_name_player, txt_singer_player, txt_time_song, txt_time_total;
+    private ImageView img_setting_player;
+    private ImageButton btn_prev, btn_play, btn_next;
+    private SeekBar skb_player;
 
-    SongEntity songEntity;
+    private SongEntity songEntity;
 
     private boolean paused;
 
-    private MusicService musicSrv = act_list_song.musicSrv;
+    private MusicService musicSrv = ActivityListSong.musicSrv;
 
-    int posSong;
+    private int posSong;
 
     public static final String API_LYRIC = "https://raw.githubusercontent.com/MrNinja/android_music_app_api/master/api/lyric/";
+
+    private boolean isBackGround = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -56,11 +60,15 @@ public class act_player extends AppCompatActivity {
         if (musicSrv != null) {
             setInfoSong(musicSrv.getInfo());
         }
-        if (!act_list_song.playbackPaused) {
-            btn_play.setImageResource(R.mipmap.av_pause);
-        } else {
+        if (ActivityListSong.playbackPaused) {
             btn_play.setImageResource(R.mipmap.av_play);
+        } else {
+            btn_play.setImageResource(R.mipmap.av_pause);
         }
+
+        //run on background
+        SharedPreferences sharedPreferences = getSharedPreferences("setting", Context.MODE_PRIVATE);
+        isBackGround = sharedPreferences.getBoolean("isBackGround", false);
     }
 
     @Override
@@ -68,40 +76,27 @@ public class act_player extends AppCompatActivity {
         super.onPause();
         paused = true;
 
-//        musicSrv.pausePlayer();
-//        if(!act_list_song.playbackPaused){
-//            act_list_song.playbackPaused = true;
-//        }
+        if(!isBackGround) {
+            musicSrv.pausePlayer();
+            if(!ActivityListSong.playbackPaused){
+                ActivityListSong.playbackPaused = true;
+            }
+        }
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-//        this.unbindService(act_list_song.musicConnection);
-//        Intent intent = new Intent(act_player.this, MusicService.class);
-//        this.stopService(intent);
-//        musicSrv.stopPlayer();
-
-//        musicSrv.pausePlayer();
-//        if(!act_list_song.playbackPaused){
-//            act_list_song.playbackPaused = true;
-//        }
-
     }
 
-    //song select
-    public void songPicked(int pos) {
-        musicSrv.setSong(pos);
-        musicSrv.playSong();
-        if (act_list_song.playbackPaused) {
-            act_list_song.playbackPaused = false;
-        }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 
     private void initData() {
 
         //get data
-
         if (getIntent().getBundleExtra("bundle") != null) {
             Bundle bundle = getIntent().getBundleExtra("bundle");
             songEntity = (SongEntity) bundle.getSerializable("songEntity");
@@ -111,14 +106,6 @@ public class act_player extends AppCompatActivity {
 
             posSong = getIntent().getBundleExtra("bundle").getInt("position");
         }
-        //play
-//        songPicked(posSong);
-
-        //play icon change
-//        if (act_list_song.playbackPaused == false) {
-//            btn_play.setImageResource(R.mipmap.av_pause);
-//        }
-
     }
 
     private void initControl() {
@@ -139,7 +126,7 @@ public class act_player extends AppCompatActivity {
         img_setting_player.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(act_player.this, act_setting.class);
+                Intent intent = new Intent(ActivityPlayer.this, ActivitySetting.class);
                 startActivity(intent);
             }
         });
@@ -147,13 +134,13 @@ public class act_player extends AppCompatActivity {
         btn_play.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (act_list_song.playbackPaused) {
+                if (ActivityListSong.playbackPaused) {
                     musicSrv.start();
-                    act_list_song.playbackPaused = !act_list_song.playbackPaused;
+                    ActivityListSong.playbackPaused = !ActivityListSong.playbackPaused;
                     btn_play.setImageResource(R.mipmap.av_pause);
                 } else {
                     musicSrv.pausePlayer();
-                    act_list_song.playbackPaused = !act_list_song.playbackPaused;
+                    ActivityListSong.playbackPaused = !ActivityListSong.playbackPaused;
                     btn_play.setImageResource(R.mipmap.av_play);
                 }
             }
@@ -165,8 +152,8 @@ public class act_player extends AppCompatActivity {
                 musicSrv.playNext();
                 songEntity = musicSrv.getInfo();
                 setInfoSong(songEntity);
-                if (act_list_song.playbackPaused) {
-                    act_list_song.playbackPaused = false;
+                if (ActivityListSong.playbackPaused) {
+                    ActivityListSong.playbackPaused = false;
                     btn_play.setImageResource(R.mipmap.av_pause);
                 }
             }
@@ -178,18 +165,12 @@ public class act_player extends AppCompatActivity {
                 musicSrv.playPrev();
                 songEntity = musicSrv.getInfo();
                 setInfoSong(songEntity);
-                if (act_list_song.playbackPaused) {
-                    act_list_song.playbackPaused = false;
+                if (ActivityListSong.playbackPaused) {
+                    ActivityListSong.playbackPaused = false;
                     btn_play.setImageResource(R.mipmap.av_pause);
                 }
             }
         });
-    }
-
-    public boolean isPlaying() {
-        if (musicSrv != null)
-            return musicSrv.isPng();
-        return false;
     }
 
     public void setInfoSong(SongEntity songEntity) {

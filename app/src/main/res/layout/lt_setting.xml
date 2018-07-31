@@ -38,11 +38,11 @@
                 android:text="Play music on background"
                 android:textSize="20sp"/>
             <CheckBox
-                android:id="@+id/ckb_background"
+                android:id="@+id/ckb_setting"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="20sp"
-                android:layout_marginStart="20sp"/>
+                android:layout_marginStart="20sp"
+                />
         </LinearLayout>
 
         <TextView

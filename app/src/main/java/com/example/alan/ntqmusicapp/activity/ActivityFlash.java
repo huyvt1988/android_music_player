@@ -16,14 +16,13 @@ import android.support.v4.content.ContextCompat;
 import android.widget.Toast;
 
 import com.example.alan.ntqmusicapp.R;
-import com.example.alan.ntqmusicapp.controller.APIDataAsyncTask;
 import com.example.alan.ntqmusicapp.room.AppDatabase;
 import com.example.alan.ntqmusicapp.room.SongEntity;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class act_flash extends Activity {
+public class ActivityFlash extends Activity {
     private List<SongEntity> songList;
     AppDatabase database;
     public static final String API_LIST_SONG = "https://raw.githubusercontent.com/MrNinja/android_music_app_api/master/api/list_music";
@@ -83,7 +82,7 @@ public class act_flash extends Activity {
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    Intent intent = new Intent(act_flash.this, act_list_song.class);
+                    Intent intent = new Intent(ActivityFlash.this, ActivityListSong.class);
                     startActivity(intent);
                     finish();
                 }
@@ -127,8 +126,8 @@ public class act_flash extends Activity {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            Toast.makeText(act_flash.this, "Data loaded!", Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(act_flash.this, act_list_song.class);
+            Toast.makeText(ActivityFlash.this, "Data loaded!", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(ActivityFlash.this, ActivityListSong.class);
             startActivity(intent);
         }
     }

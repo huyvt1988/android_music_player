@@ -2,6 +2,7 @@ package com.example.alan.ntqmusicapp.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -15,7 +16,6 @@ import android.widget.TextView;
 
 import com.example.alan.ntqmusicapp.R;
 import com.example.alan.ntqmusicapp.adapter.SongAdapter;
-import com.example.alan.ntqmusicapp.controller.MusicController;
 import com.example.alan.ntqmusicapp.model.ItemClickListener;
 import com.example.alan.ntqmusicapp.room.AppDatabase;
 import com.example.alan.ntqmusicapp.room.SongEntity;
@@ -25,12 +25,13 @@ import com.example.alan.ntqmusicapp.service.MusicService.MusicBinder;
 import android.os.IBinder;
 import android.content.ComponentName;
 import android.content.ServiceConnection;
+import android.widget.Toast;
 
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public class act_list_song extends AppCompatActivity {
+public class ActivityListSong extends AppCompatActivity {
     private ImageView img_setting_list, img_song_list;
     private Button btn_sort_by_name, btn_sort_by_folder;
     private ImageButton btn_prev_mini, btn_play_mini, btn_next_mini;
@@ -40,14 +41,13 @@ public class act_list_song extends AppCompatActivity {
     public static List<SongEntity> songList;
     private SongAdapter songAdapter;
 
-    public static MusicController controller;
     public static MusicService musicSrv;
     private Intent playIntent;
     public static boolean musicBound = false;
 
     public static boolean paused = false, playbackPaused = true;
-    private boolean isFirst = true;
-    SongEntity songEntity;
+    private SongEntity songEntity;
+    private boolean isBackGround = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,14 +62,6 @@ public class act_list_song extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-
-        //update UI mini_player
-        if(musicSrv != null) {
-            setInfoSong(musicSrv.getInfo());
-        }
-        if(playbackPaused){
-            btn_play_mini.setImageResource(R.mipmap.av_play);
-        }
     }
 
     @Override
@@ -79,37 +71,42 @@ public class act_list_song extends AppCompatActivity {
             paused = false;
         }
 
-//        startService();
-
         //update status mini player
         if(musicSrv != null){
             setInfoSong(musicSrv.getInfo());
         }
-        if (!playbackPaused) {
-            btn_play_mini.setImageResource(R.mipmap.av_pause);
-        } else {
+        if (playbackPaused) {
             btn_play_mini.setImageResource(R.mipmap.av_play);
+        } else {
+            btn_play_mini.setImageResource(R.mipmap.av_pause);
         }
 
-
+        //run on background
+        SharedPreferences sharedPreferences = getSharedPreferences("setting", Context.MODE_PRIVATE);
+        isBackGround = sharedPreferences.getBoolean("isBackGround", false);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         paused = true;
+
+        //background
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-//        this.unbindService(act_list_song.musicConnection);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        this.stopService(playIntent);
+        if(musicBound){
+            this.unbindService(musicConnection);
+            Toast.makeText(ActivityListSong.this, "Service Un-Binded", Toast.LENGTH_SHORT).show();
+        }
+//        this.stopService(playIntent);
     }
 
     //connect to the service
@@ -135,7 +132,7 @@ public class act_list_song extends AppCompatActivity {
         img_setting_list.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(act_list_song.this, act_setting.class);
+                Intent intent = new Intent(ActivityListSong.this, ActivitySetting.class);
                 startActivity(intent);
             }
         });
@@ -176,10 +173,6 @@ public class act_list_song extends AppCompatActivity {
         btn_play_mini.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(isFirst){
-                    setInfoSong(musicSrv.initSongInfo());
-                }
-
                 if (playbackPaused) {
                     musicSrv.start();
                     playbackPaused = !playbackPaused;
@@ -195,7 +188,7 @@ public class act_list_song extends AppCompatActivity {
         songAdapter.setOnClickListener(new ItemClickListener() {
             @Override
             public void OnClickListener(int position) {
-                Intent intent = new Intent(act_list_song.this, act_player.class);
+                Intent intent = new Intent(ActivityListSong.this, ActivityPlayer.class);
                 SongEntity songEntity = songList.get(position);
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("songEntity", songEntity);
@@ -205,15 +198,13 @@ public class act_list_song extends AppCompatActivity {
 
                 //play
                 songPicked(position);
-//                setInfoSong(songEntity);
-
             }
         });
     }
 
     private void initData() {
         AppDatabase database = AppDatabase.getAppDatabase(this);
-        songList = database.songDao().getAllSong();
+        songList = database.songDao().getAllSongByName();
     }
 
     private void initControl() {
@@ -255,20 +246,14 @@ public class act_list_song extends AppCompatActivity {
         }
     }
 
-    public boolean isPlaying() {
-        if (musicSrv != null && musicBound)
-            return musicSrv.isPng();
-        return false;
-    }
-
     public void startService(){
-        //start service
         if (playIntent == null) {
             playIntent = new Intent(this, MusicService.class);
-            if (musicSrv == null){
+            if (!musicBound){
                 bindService(playIntent, musicConnection, Context.BIND_AUTO_CREATE);
-                startService(playIntent);
+                Toast.makeText(ActivityListSong.this, "bindService", Toast.LENGTH_SHORT).show();
             }
+//            startService(playIntent);
         }
     }
 }

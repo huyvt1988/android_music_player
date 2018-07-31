@@ -19,7 +19,7 @@ import android.app.Notification;
 import android.app.PendingIntent;
 
 import com.example.alan.ntqmusicapp.R;
-import com.example.alan.ntqmusicapp.activity.act_player;
+import com.example.alan.ntqmusicapp.activity.ActivityPlayer;
 import com.example.alan.ntqmusicapp.room.SongEntity;
 
 public class MusicService extends Service implements
@@ -28,7 +28,6 @@ public class MusicService extends Service implements
     private List<SongEntity> songList;
     private int songPosn;
     private final IBinder musicBind = new MusicBinder();
-    private String songName;
     SongEntity playingSong;
     //notification id
     private static final int NOTIFY_ID = 1;
@@ -49,9 +48,6 @@ public class MusicService extends Service implements
         player.setOnErrorListener(this);
     }
 
-    public SongEntity initSongInfo(){
-        return songList.get(1);
-    }
 
     public void setList(List<SongEntity> theSongs) {
         songList = theSongs;
@@ -66,8 +62,6 @@ public class MusicService extends Service implements
     public void playSong() {
         player.reset();
         playingSong = songList.get(songPosn);
-
-        songName = playingSong.getSong_name();
 
         long currSong = playingSong.getId_long();
         Uri trackUri = ContentUris.withAppendedId(android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, currSong);
@@ -97,6 +91,14 @@ public class MusicService extends Service implements
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+//        player.stop();
+//        player.release();
+        stopForeground(true);
+    }
+
+    @Override
     public void onCompletion(MediaPlayer mp) {
         if (player.getCurrentPosition() > 0) {
             mp.reset();
@@ -113,7 +115,7 @@ public class MusicService extends Service implements
     @Override
     public void onPrepared(MediaPlayer mp) {
         mp.start();
-        Intent notIntent = new Intent(this, act_player.class);
+        Intent notIntent = new Intent(this, ActivityPlayer.class);
         notIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendInt = PendingIntent.getActivity(this, 0,
                 notIntent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -122,10 +124,10 @@ public class MusicService extends Service implements
 
         builder.setContentIntent(pendInt)
                 .setSmallIcon(R.mipmap.av_play)
-                .setTicker(songName)
+                .setTicker(playingSong.getSong_name())
                 .setOngoing(true)
-                .setContentTitle("Playing")
-                .setContentText(songName);
+                .setContentTitle(playingSong.getSong_name())
+                .setContentText(playingSong.getSinger());
         Notification not = builder.build();
 
         startForeground(NOTIFY_ID, not);
@@ -178,9 +180,4 @@ public class MusicService extends Service implements
         return songList.get(songPosn);
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        stopForeground(true);
-    }
 }

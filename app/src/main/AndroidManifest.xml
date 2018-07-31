@@ -15,7 +15,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".activity.act_flash"
+            android:name=".activity.ActivityFlash"
             android:launchMode="singleTop"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -24,10 +24,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.act_list_song"/>
-        <activity android:name=".activity.act_player_base"/>
-        <activity android:name=".activity.act_player"/>
-        <activity android:name=".activity.act_setting"/>
+        <activity android:name=".activity.ActivityListSong"/>
+        <activity android:name=".activity.ActivityPlayer"/>
+        <activity android:name=".activity.ActivitySetting"/>
 
         <service android:name=".service.MusicService" />
     </application>

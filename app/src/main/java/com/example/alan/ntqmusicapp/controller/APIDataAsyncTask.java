@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.widget.Toast;
 
-import com.example.alan.ntqmusicapp.activity.act_list_song;
+import com.example.alan.ntqmusicapp.activity.ActivityListSong;
 import com.example.alan.ntqmusicapp.model.Commons;
 import com.example.alan.ntqmusicapp.room.AppDatabase;
 import com.example.alan.ntqmusicapp.room.SongEntity;
@@ -52,7 +52,7 @@ public class APIDataAsyncTask extends AsyncTask<String, Integer, Void>{
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
         Toast.makeText(context, "Data loaded!", Toast.LENGTH_SHORT).show();
-        Intent intent = new Intent(context, act_list_song.class);
+        Intent intent = new Intent(context, ActivityListSong.class);
         context.startActivity(intent);
     }
 }
