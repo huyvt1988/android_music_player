@@ -17,9 +17,39 @@ public class DataGenerator {
         return instance;
     }
 
-    public void generateSong(List<SongEntity> songList) {
+    public void insertSong(SongEntity song) {
+        if (dataBase == null)
+            return;
+        dataBase.songDao().insertSong(song);
+    }
+
+    public void insertSongs(List<SongEntity> songList) {
         if (dataBase == null)
             return;
         dataBase.songDao().insertMultipleSongs(songList);
+    }
+
+    public List<SongEntity> getAllSong() {
+        if (dataBase == null)
+            return null;
+        return dataBase.songDao().getAllSong();
+    }
+
+    public List<SongEntity> getSongsByName() {
+        if (dataBase == null)
+            return null;
+        return dataBase.songDao().getSongsByName();
+    }
+
+    public List<SongEntity> getSongsByAPI() {
+        if (dataBase == null)
+            return null;
+        return dataBase.songDao().getSongsByAPI();
+    }
+
+    public List<SongEntity> getSongsExternal() {
+        if (dataBase == null)
+            return null;
+        return dataBase.songDao().getSongsExternal();
     }
 }

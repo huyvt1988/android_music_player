@@ -19,5 +19,11 @@ public interface SongDao {
     List<SongEntity> getAllSong();
 
     @Query("Select * From song Order By song_name ASC")
-    List<SongEntity> getAllSongByName();
+    List<SongEntity> getSongsByName();
+
+    @Query("Select * From song Where id_long = 0 ")
+    List<SongEntity> getSongsByAPI();
+
+    @Query("Select * From song Where id_long != 0 ")
+    List<SongEntity> getSongsExternal();
 }

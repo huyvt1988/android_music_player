@@ -16,7 +16,9 @@ import android.support.v4.content.ContextCompat;
 import android.widget.Toast;
 
 import com.example.alan.ntqmusicapp.R;
+import com.example.alan.ntqmusicapp.controller.APIDataAsyncTask;
 import com.example.alan.ntqmusicapp.room.AppDatabase;
+import com.example.alan.ntqmusicapp.room.DataGenerator;
 import com.example.alan.ntqmusicapp.room.SongEntity;
 
 import java.util.ArrayList;
@@ -25,10 +27,10 @@ import java.util.List;
 public class ActivityFlash extends Activity {
     private List<SongEntity> songList;
     AppDatabase database;
-    public static final String API_LIST_SONG = "https://raw.githubusercontent.com/MrNinja/android_music_app_api/master/api/list_music";
 
     public static final int MY_PERMISSIONS_REQUEST_READ_MEDIA = 1;
 
+    public static final String API_LIST_SONG = "https://raw.githubusercontent.com/MrNinja/android_music_app_api/master/api/list_music";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,14 +70,16 @@ public class ActivityFlash extends Activity {
         }
     }
 
-    public void createDatabase(){
+    public void createDatabase() {
         //create database
         database = AppDatabase.getAppDatabase(this);
-        if (database.songDao().getAllSong().size() == 0) {
-//            APIDataAsyncTask asyncTask = new APIDataAsyncTask(this,database);
-//            asyncTask.execute(API_LIST_SONG);
+        if (DataGenerator.with(database).getSongsByAPI().size() == 0) {
+            APIDataAsyncTask asyncTask = new APIDataAsyncTask(this, database);
+            asyncTask.execute(API_LIST_SONG);
+        }
 
-            //external store
+        //external store
+        if (DataGenerator.with(database).getSongsExternal().size() == 0) {
             externalSongAsyncTask externalSongAsyncTask = new externalSongAsyncTask();
             externalSongAsyncTask.execute();
         } else {
@@ -119,14 +123,14 @@ public class ActivityFlash extends Activity {
         @Override
         protected Void doInBackground(Void... voids) {
             getSongList();
-            database.songDao().insertMultipleSongs(songList);
+            DataGenerator.with(database).insertSongs(songList);
             return null;
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            Toast.makeText(ActivityFlash.this, "Data loaded!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(ActivityFlash.this, "External Data loaded!", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(ActivityFlash.this, ActivityListSong.class);
             startActivity(intent);
         }

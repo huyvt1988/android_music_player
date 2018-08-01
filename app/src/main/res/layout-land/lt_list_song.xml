@@ -65,7 +65,7 @@
                     android:text="Songs"
                     />
                 <Button
-                    android:id="@+id/btn_sort_by_folder"
+                    android:id="@+id/btn_sort_by_api"
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
                     android:layout_weight="1"

@@ -45,14 +45,14 @@
             android:layout_height="wrap_content"
             android:layout_width="0dp"
             android:layout_weight="1"
-            android:text="Songs"
+            android:text="Sort by name"
             />
         <Button
-            android:id="@+id/btn_sort_by_folder"
+            android:id="@+id/btn_sort_by_api"
             android:layout_height="wrap_content"
             android:layout_width="0dp"
             android:layout_weight="1"
-            android:text="Folder"/>
+            android:text="Test API"/>
     </LinearLayout>
 
     <android.support.v7.widget.RecyclerView

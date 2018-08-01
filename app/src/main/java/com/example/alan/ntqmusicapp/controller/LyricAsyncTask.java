@@ -1,20 +1,17 @@
 package com.example.alan.ntqmusicapp.controller;
 
-import android.app.Activity;
 import android.os.AsyncTask;
-import android.widget.TextView;
 
-import com.example.alan.ntqmusicapp.R;
 import com.example.alan.ntqmusicapp.entity.Lyric;
+import com.example.alan.ntqmusicapp.entity.SongLyric;
 import com.example.alan.ntqmusicapp.model.Commons;
 import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
 
-public class APILyricAsyncTask extends AsyncTask<String, Void, String> {
-    Activity activity;
+public class LyricAsyncTask extends AsyncTask<String, Void, String> {
+    SongLyric songLyric;
 
-    public APILyricAsyncTask(Activity activity) {
-        this.activity = activity;
+    public LyricAsyncTask(SongLyric songLyric) {
+        this.songLyric = songLyric;
     }
 
     @Override
@@ -28,13 +25,14 @@ public class APILyricAsyncTask extends AsyncTask<String, Void, String> {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        if (!result.isEmpty()) {
+            songLyric.setLyric(result);
+        }
         return result;
     }
 
     @Override
     protected void onPostExecute(String s) {
         super.onPostExecute(s);
-        TextView textView = activity.findViewById(R.id.txt_lyric);
-        textView.setText(s);
     }
 }

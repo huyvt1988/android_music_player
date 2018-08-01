@@ -13,7 +13,6 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.example.alan.ntqmusicapp.R;
-import com.example.alan.ntqmusicapp.controller.APILyricAsyncTask;
 import com.example.alan.ntqmusicapp.room.SongEntity;
 import com.example.alan.ntqmusicapp.service.MusicService;
 
@@ -56,6 +55,12 @@ public class ActivityPlayer extends AppCompatActivity {
         if (paused) {
             paused = false;
         }
+
+        if (ActivityListSong.isAPIList) {
+            //set lyric
+            txt_lyric.setText(ActivityListSong.songLyricList.get(musicSrv.getSongPosn()).getLyric());
+        }
+
         //update status mini player
         if (musicSrv != null) {
             setInfoSong(musicSrv.getInfo());
@@ -76,9 +81,9 @@ public class ActivityPlayer extends AppCompatActivity {
         super.onPause();
         paused = true;
 
-        if(!isBackGround) {
+        if (!isBackGround) {
             musicSrv.pausePlayer();
-            if(!ActivityListSong.playbackPaused){
+            if (!ActivityListSong.playbackPaused) {
                 ActivityListSong.playbackPaused = true;
             }
         }
@@ -100,26 +105,22 @@ public class ActivityPlayer extends AppCompatActivity {
         if (getIntent().getBundleExtra("bundle") != null) {
             Bundle bundle = getIntent().getBundleExtra("bundle");
             songEntity = (SongEntity) bundle.getSerializable("songEntity");
-            setInfoSong(songEntity);
-            APILyricAsyncTask asyncTask = new APILyricAsyncTask(this);
-            asyncTask.execute(API_LYRIC + songEntity.getId());
-
             posSong = getIntent().getBundleExtra("bundle").getInt("position");
         }
     }
 
     private void initControl() {
-        txt_song_title = (TextView) findViewById(R.id.txt_song_title);
-        txt_lyric = (TextView) findViewById(R.id.txt_lyric);
-        txt_song_name_player = (TextView) findViewById(R.id.txt_song_name_player);
-        txt_singer_player = (TextView) findViewById(R.id.txt_singer_player);
-//        txt_time_song = (TextView) findViewById(R.id.txt_time_song);
-//        txt_time_total = (TextView) findViewById(R.id.txt_time_total);
-        img_setting_player = (ImageView) findViewById(R.id.img_setting_player);
-        btn_prev = (ImageButton) findViewById(R.id.btn_prev);
-        btn_play = (ImageButton) findViewById(R.id.btn_play);
-        btn_next = (ImageButton) findViewById(R.id.btn_next);
-//        skb_player = (SeekBar) findViewById(R.id.skb_player);
+        txt_song_title = findViewById(R.id.txt_song_title);
+        txt_lyric = findViewById(R.id.txt_lyric);
+        txt_song_name_player = findViewById(R.id.txt_song_name_player);
+        txt_singer_player = findViewById(R.id.txt_singer_player);
+//        txt_time_song =  findViewById(R.id.txt_time_song);
+//        txt_time_total =  findViewById(R.id.txt_time_total);
+        img_setting_player = findViewById(R.id.img_setting_player);
+        btn_prev = findViewById(R.id.btn_prev);
+        btn_play = findViewById(R.id.btn_play);
+        btn_next = findViewById(R.id.btn_next);
+//        skb_player =  findViewById(R.id.skb_player);
     }
 
     private void initEvent() {
@@ -152,6 +153,10 @@ public class ActivityPlayer extends AppCompatActivity {
                 musicSrv.playNext();
                 songEntity = musicSrv.getInfo();
                 setInfoSong(songEntity);
+                //set lyric
+                if (ActivityListSong.isAPIList) {
+                    txt_lyric.setText(ActivityListSong.songLyricList.get(musicSrv.getSongPosn()).getLyric());
+                }
                 if (ActivityListSong.playbackPaused) {
                     ActivityListSong.playbackPaused = false;
                     btn_play.setImageResource(R.mipmap.av_pause);
@@ -165,6 +170,10 @@ public class ActivityPlayer extends AppCompatActivity {
                 musicSrv.playPrev();
                 songEntity = musicSrv.getInfo();
                 setInfoSong(songEntity);
+                //set lyric
+                if (ActivityListSong.isAPIList) {
+                    txt_lyric.setText(ActivityListSong.songLyricList.get(musicSrv.getSongPosn()).getLyric());
+                }
                 if (ActivityListSong.playbackPaused) {
                     ActivityListSong.playbackPaused = false;
                     btn_play.setImageResource(R.mipmap.av_pause);

@@ -67,10 +67,10 @@ public class MusicService extends Service implements
         Uri trackUri = ContentUris.withAppendedId(android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, currSong);
         try {
             player.setDataSource(getApplicationContext(), trackUri);
+            player.prepareAsync();
         } catch (Exception e) {
             Log.e("MUSIC SERVICE", "Error setting data source", e);
         }
-        player.prepareAsync();
     }
 
     public void setSong(int songIndex) {
@@ -171,13 +171,17 @@ public class MusicService extends Service implements
         playSong();
     }
 
-    public void stopPlayer(){
+    public void stopPlayer() {
         player.stop();
         player.release();
     }
 
     public SongEntity getInfo() {
         return songList.get(songPosn);
+    }
+
+    public int getSongPosn() {
+        return songPosn;
     }
 
 }

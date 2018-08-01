@@ -14,6 +14,7 @@ import java.net.URL;
 
 public class Commons {
     private static final String TAG = Commons.class.getSimpleName();
+
     public Commons() {
     }
 
@@ -22,10 +23,9 @@ public class Commons {
         try {
             URL url = new URL(sUrl);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-//            conn.setRequestProperty("User-Agent", "Mozilla/5.0");
             conn.setRequestMethod("GET");
             int responseCode = conn.getResponseCode();
-            if(conn.getResponseCode() == 200) {
+            if (responseCode == 200) {
                 InputStream in = new BufferedInputStream(conn.getInputStream());
                 response = convertStreamToString(in);
             }
