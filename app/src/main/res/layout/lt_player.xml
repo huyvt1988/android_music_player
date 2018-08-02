@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/lt_player"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@mipmap/background"
-    android:id="@+id/lt_player">
+    android:orientation="vertical">
 
     <Toolbar
         android:id="@+id/toolbar_list"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary">
+        android:background="@mipmap/player_mini">
 
         <RelativeLayout
             android:layout_width="wrap_content"
@@ -39,23 +40,41 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
-        <ScrollView
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="0sp"
             android:layout_weight="2"
-            android:paddingLeft="10sp"
-            android:paddingRight="10sp"
-            android:paddingTop="20sp"
-            android:paddingBottom="20sp">
-
-            <TextView
-                android:id="@+id/txt_lyric"
+            >
+            <ScrollView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/white"
-                android:textSize="@dimen/SongTitle"
-                android:gravity="center"/>
-        </ScrollView>
+                android:layout_height="match_parent"
+                android:paddingLeft="40sp"
+                android:paddingRight="40sp"
+                android:paddingTop="20sp"
+                android:paddingBottom="20sp"
+                android:scrollbars="none">
+
+                <TextView
+                    android:id="@+id/txt_lyric"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/SongTitle"
+                    android:gravity="center"/>
+            </ScrollView>
+
+            <com.mikhaellopez.circularimageview.CircularImageView
+                android:id="@+id/img_disk_play"
+                android:layout_width="250sp"
+                android:layout_height="250sp"
+                android:layout_centerInParent="true"
+                android:src="@mipmap/disk"
+                app:civ_border_width="5sp"
+                app:civ_border_color="#b6bae8"
+                app:civ_shadow="true"
+                app:civ_shadow_color="#ffffff"
+                />
+        </RelativeLayout>
 
         <LinearLayout
             android:id="@+id/lt_controller"
@@ -70,62 +89,60 @@
                 android:layout_weight="2"
                 android:gravity="center"
                 android:orientation="vertical">
+                    <TextView
+                        android:id="@+id/txt_song_name_player"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Song name"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/SongTitle" />
 
-                <TextView
-                    android:id="@+id/txt_song_name_player"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Song name"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/SongTitle" />
-
-                <TextView
-
-                    android:id="@+id/txt_singer_player"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Singer"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/SongSinger" />
+                    <TextView
+                        android:id="@+id/txt_singer_player"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Singer"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/SongSinger" />
             </LinearLayout>
 
-            <!--<RelativeLayout-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="0sp"-->
-            <!--android:layout_weight="2">-->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="0sp"
+                android:layout_weight="2"
+                android:gravity="center">
 
-            <!--<SeekBar-->
-            <!--android:id="@+id/skb_player"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_alignParentBottom="true"-->
-            <!--android:layout_marginStart="10sp"-->
-            <!--android:layout_marginEnd="10sp"-->
-            <!--/>-->
+                <SeekBar
+                    android:id="@+id/skb_player"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginEnd="10sp"
+                    android:layout_marginStart="10sp" />
 
-            <!--<TextView-->
-            <!--android:id="@+id/txt_time_song"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_above="@+id/skb_player"-->
-            <!--android:layout_alignParentStart="true"-->
-            <!--android:layout_marginStart="10sp"-->
-            <!--android:text="00:00"-->
-            <!--android:textColor="@color/white"-->
-            <!--android:textSize="20sp" />-->
+                <TextView
+                    android:id="@+id/txt_time_song"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@+id/skb_player"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginStart="10sp"
+                    android:text="00:00"
+                    android:textColor="@color/white"
+                    android:textSize="20sp" />
 
-            <!--<TextView-->
-            <!--android:id="@+id/txt_time_total"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_above="@+id/skb_player"-->
-            <!--android:layout_alignParentEnd="true"-->
-            <!--android:layout_marginEnd="10sp"-->
-            <!--android:text="00:00"-->
-            <!--android:textAppearance="@style/TextAppearance.AppCompat"-->
-            <!--android:textColor="@color/white"-->
-            <!--android:textSize="20sp" />-->
-            <!--</RelativeLayout>-->
+                <TextView
+                    android:id="@+id/txt_time_total"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@+id/skb_player"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginEnd="10sp"
+                    android:text="00:00"
+                    android:textAppearance="@style/TextAppearance.AppCompat"
+                    android:textColor="@color/white"
+                    android:textSize="20sp" />
+            </RelativeLayout>
 
             <LinearLayout
                 android:layout_width="wrap_content"

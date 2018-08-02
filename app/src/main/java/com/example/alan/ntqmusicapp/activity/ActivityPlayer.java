@@ -4,17 +4,22 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.alan.ntqmusicapp.R;
 import com.example.alan.ntqmusicapp.room.SongEntity;
 import com.example.alan.ntqmusicapp.service.MusicService;
+import com.mikhaellopez.circularimageview.CircularImageView;
 
 
 public class ActivityPlayer extends AppCompatActivity {
@@ -22,6 +27,7 @@ public class ActivityPlayer extends AppCompatActivity {
     private ImageView img_setting_player;
     private ImageButton btn_prev, btn_play, btn_next;
     private SeekBar skb_player;
+    private CircularImageView img_disk;
 
     private SongEntity songEntity;
 
@@ -31,27 +37,35 @@ public class ActivityPlayer extends AppCompatActivity {
 
     private int posSong;
 
-    public static final String API_LYRIC = "https://raw.githubusercontent.com/MrNinja/android_music_app_api/master/api/lyric/";
-
     private boolean isBackGround = false;
+
+    private Handler handler = null;
+
+    private Animation animation;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Toast.makeText(this, "onCreate-player", Toast.LENGTH_SHORT).show();
         setContentView(R.layout.lt_player);
         initControl();
         initData();
         initEvent();
+
+        //seekbar, song info
+        updateSongInterface();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
+        Toast.makeText(this, "onStart-player", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        Toast.makeText(this, "onResume-player", Toast.LENGTH_SHORT).show();
         if (paused) {
             paused = false;
         }
@@ -59,16 +73,22 @@ public class ActivityPlayer extends AppCompatActivity {
         if (ActivityListSong.isAPIList) {
             //set lyric
             txt_lyric.setText(ActivityListSong.songLyricList.get(musicSrv.getSongPosn()).getLyric());
+            img_disk.setVisibility(View.INVISIBLE);
+        } else {
+            txt_lyric.setText("");
+            img_disk.setVisibility(View.VISIBLE);
         }
 
         //update status mini player
-        if (musicSrv != null) {
-            setInfoSong(musicSrv.getInfo());
-        }
+//        if (musicSrv != null) {
+//            setInfoSong(musicSrv.getInfo());
+//        }
         if (ActivityListSong.playbackPaused) {
             btn_play.setImageResource(R.mipmap.av_play);
         } else {
             btn_play.setImageResource(R.mipmap.av_pause);
+            if (!ActivityListSong.isAPIList)
+                img_disk.startAnimation(animation);
         }
 
         //run on background
@@ -79,27 +99,32 @@ public class ActivityPlayer extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        Toast.makeText(this, "onPause-player", Toast.LENGTH_SHORT).show();
         paused = true;
 
         if (!isBackGround) {
-            musicSrv.pausePlayer();
-            if (!ActivityListSong.playbackPaused) {
-                ActivityListSong.playbackPaused = true;
-            }
+//            musicSrv.pausePlayer();
+//            if (!ActivityListSong.playbackPaused) {
+//                ActivityListSong.playbackPaused = true;
+//            }
         }
     }
 
     @Override
     protected void onStop() {
         super.onStop();
+        Toast.makeText(this, "onStop-player", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        Toast.makeText(this, "onDestroy-player", Toast.LENGTH_SHORT).show();
     }
 
     private void initData() {
+        //animation
+        animation = AnimationUtils.loadAnimation(this, R.anim.disk_rotate);
 
         //get data
         if (getIntent().getBundleExtra("bundle") != null) {
@@ -107,6 +132,7 @@ public class ActivityPlayer extends AppCompatActivity {
             songEntity = (SongEntity) bundle.getSerializable("songEntity");
             posSong = getIntent().getBundleExtra("bundle").getInt("position");
         }
+
     }
 
     private void initControl() {
@@ -114,13 +140,14 @@ public class ActivityPlayer extends AppCompatActivity {
         txt_lyric = findViewById(R.id.txt_lyric);
         txt_song_name_player = findViewById(R.id.txt_song_name_player);
         txt_singer_player = findViewById(R.id.txt_singer_player);
-//        txt_time_song =  findViewById(R.id.txt_time_song);
-//        txt_time_total =  findViewById(R.id.txt_time_total);
+        txt_time_song = findViewById(R.id.txt_time_song);
+        txt_time_total = findViewById(R.id.txt_time_total);
         img_setting_player = findViewById(R.id.img_setting_player);
         btn_prev = findViewById(R.id.btn_prev);
         btn_play = findViewById(R.id.btn_play);
         btn_next = findViewById(R.id.btn_next);
-//        skb_player =  findViewById(R.id.skb_player);
+        skb_player = findViewById(R.id.skb_player);
+        img_disk = findViewById(R.id.img_disk_play);
     }
 
     private void initEvent() {
@@ -135,14 +162,19 @@ public class ActivityPlayer extends AppCompatActivity {
         btn_play.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (ActivityListSong.playbackPaused) {
-                    musicSrv.start();
-                    ActivityListSong.playbackPaused = !ActivityListSong.playbackPaused;
-                    btn_play.setImageResource(R.mipmap.av_pause);
-                } else {
-                    musicSrv.pausePlayer();
-                    ActivityListSong.playbackPaused = !ActivityListSong.playbackPaused;
-                    btn_play.setImageResource(R.mipmap.av_play);
+                if (ActivityListSong.musicBound) {
+                    if (ActivityListSong.playbackPaused) {
+                        musicSrv.start();
+                        ActivityListSong.playbackPaused = false;
+                        btn_play.setImageResource(R.mipmap.av_pause);
+                        if (!ActivityListSong.isAPIList)
+                            img_disk.startAnimation(animation);
+                    } else {
+                        musicSrv.pausePlayer();
+                        ActivityListSong.playbackPaused = true;
+                        btn_play.setImageResource(R.mipmap.av_play);
+                        img_disk.clearAnimation();
+                    }
                 }
             }
         });
@@ -150,16 +182,19 @@ public class ActivityPlayer extends AppCompatActivity {
         btn_next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                musicSrv.playNext();
-                songEntity = musicSrv.getInfo();
-                setInfoSong(songEntity);
-                //set lyric
-                if (ActivityListSong.isAPIList) {
-                    txt_lyric.setText(ActivityListSong.songLyricList.get(musicSrv.getSongPosn()).getLyric());
-                }
-                if (ActivityListSong.playbackPaused) {
-                    ActivityListSong.playbackPaused = false;
-                    btn_play.setImageResource(R.mipmap.av_pause);
+                if (ActivityListSong.musicBound) {
+                    musicSrv.playNext();
+                    if (!ActivityListSong.isAPIList)
+                        img_disk.startAnimation(animation);
+                    //set lyric
+                    if (ActivityListSong.isAPIList) {
+                        txt_lyric.setText(ActivityListSong.songLyricList.get(musicSrv.getSongPosn()).getLyric());
+                    }
+                    //play button
+                    if (ActivityListSong.playbackPaused) {
+                        btn_play.setImageResource(R.mipmap.av_pause);
+                        ActivityListSong.playbackPaused = false;
+                    }
                 }
             }
         });
@@ -167,17 +202,35 @@ public class ActivityPlayer extends AppCompatActivity {
         btn_prev.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                musicSrv.playPrev();
-                songEntity = musicSrv.getInfo();
-                setInfoSong(songEntity);
-                //set lyric
-                if (ActivityListSong.isAPIList) {
-                    txt_lyric.setText(ActivityListSong.songLyricList.get(musicSrv.getSongPosn()).getLyric());
+                if (ActivityListSong.musicBound) {
+                    musicSrv.playPrev();
+                    if (!ActivityListSong.isAPIList)
+                        img_disk.startAnimation(animation);
+                    //set lyric
+                    if (ActivityListSong.isAPIList) {
+                        txt_lyric.setText(ActivityListSong.songLyricList.get(musicSrv.getSongPosn()).getLyric());
+                    }
+                    if (ActivityListSong.playbackPaused) {
+                        btn_play.setImageResource(R.mipmap.av_pause);
+                        ActivityListSong.playbackPaused = false;
+                    }
                 }
-                if (ActivityListSong.playbackPaused) {
-                    ActivityListSong.playbackPaused = false;
-                    btn_play.setImageResource(R.mipmap.av_pause);
-                }
+            }
+        });
+
+        skb_player.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                musicSrv.seek(skb_player.getProgress());
             }
         });
     }
@@ -186,6 +239,60 @@ public class ActivityPlayer extends AppCompatActivity {
         txt_song_title.setText(songEntity.getSong_name());
         txt_song_name_player.setText(songEntity.getSong_name());
         txt_singer_player.setText(songEntity.getSinger());
+    }
+
+    private void setTimeTotal() {
+        if (musicSrv.isPng() && ActivityListSong.musicBound) {
+            txt_time_total.setText(milliSecondsToTimer((long) musicSrv.getDur()));
+            skb_player.setMax(musicSrv.getDur());
+        }
+    }
+
+    private void updateSongInterface() {
+        if (handler == null) {
+            handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    setInfoSong(musicSrv.getInfo());
+                    setTimeTotal();
+                    txt_time_song.setText(milliSecondsToTimer((long) musicSrv.getCurrentPosn()));
+                    skb_player.setProgress(musicSrv.getCurrentPosn());
+
+                    handler.postDelayed(this, 1000);
+                }
+            }, 100);
+        }
+    }
+
+    /**
+     * Function to convert milliseconds time to Timer Format
+     * Hours:Minutes:Seconds
+     */
+    public String milliSecondsToTimer(long milliseconds) {
+        String finalTimerString = "";
+        String secondsString = "";
+
+        // Convert total duration into time
+        int hours = (int) (milliseconds / (1000 * 60 * 60));
+        int minutes = (int) (milliseconds % (1000 * 60 * 60)) / (1000 * 60);
+        int seconds = (int) ((milliseconds % (1000 * 60 * 60)) % (1000 * 60) / 1000);
+        // Add hours if there
+        if (hours > 0) {
+            finalTimerString = hours + ":";
+        }
+
+        // Prepending 0 to seconds if it is one digit
+        if (seconds < 10) {
+            secondsString = "0" + seconds;
+        } else {
+            secondsString = "" + seconds;
+        }
+
+        finalTimerString = finalTimerString + minutes + ":" + secondsString;
+
+        // return timer string
+        return finalTimerString;
     }
 
 }

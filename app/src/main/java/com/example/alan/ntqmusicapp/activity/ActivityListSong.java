@@ -61,7 +61,7 @@ public class ActivityListSong extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Toast.makeText(this, "onCreate", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, "onCreate", Toast.LENGTH_SHORT).show();
         setContentView(R.layout.lt_list_song);
         startService();
         initData();
@@ -72,13 +72,13 @@ public class ActivityListSong extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        Toast.makeText(this, "onStart", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, "onStart", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        Toast.makeText(this, "onResume", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, "onResume", Toast.LENGTH_SHORT).show();
         if (paused) {
             paused = false;
         }
@@ -101,7 +101,7 @@ public class ActivityListSong extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        Toast.makeText(this, "onPause", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, "onPause", Toast.LENGTH_SHORT).show();
         paused = true;
 
         //background
@@ -110,13 +110,13 @@ public class ActivityListSong extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        Toast.makeText(this, "onStop", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, "onStop", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Toast.makeText(this, "onDestroy", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, "onDestroy", Toast.LENGTH_SHORT).show();
         if (musicBound) {
             this.unbindService(musicConnection);
             Toast.makeText(ActivityListSong.this, "Service Un-Binded", Toast.LENGTH_SHORT).show();
@@ -185,40 +185,43 @@ public class ActivityListSong extends AppCompatActivity {
         btn_next_mini.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                musicSrv.playNext();
-                songEntity = musicSrv.getInfo();
-                setInfoSong(songEntity);
-                if (playbackPaused) {
-                    playbackPaused = false;
-                    btn_play_mini.setImageResource(R.mipmap.av_pause);
+                if(musicBound) {
+                    musicSrv.playNext();
+                    setInfoSong(musicSrv.getInfo());
+                    if (playbackPaused) {
+                        playbackPaused = false;
+                        btn_play_mini.setImageResource(R.mipmap.av_pause);
+                    }
                 }
             }
         });
         btn_prev_mini.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                musicSrv.playPrev();
-                songEntity = musicSrv.getInfo();
-                setInfoSong(songEntity);
-                if (playbackPaused) {
-                    playbackPaused = false;
-                    btn_play_mini.setImageResource(R.mipmap.av_pause);
+                if (musicBound) {
+                    musicSrv.playPrev();
+                    setInfoSong(musicSrv.getInfo());
+                    if (playbackPaused) {
+                        playbackPaused = false;
+                        btn_play_mini.setImageResource(R.mipmap.av_pause);
+                    }
                 }
             }
         });
         btn_play_mini.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (playbackPaused) {
-                    musicSrv.start();
-                    songEntity = musicSrv.getInfo();
-                    setInfoSong(songEntity);
-                    playbackPaused = !playbackPaused;
-                    btn_play_mini.setImageResource(R.mipmap.av_pause);
-                } else {
-                    musicSrv.pausePlayer();
-                    playbackPaused = !playbackPaused;
-                    btn_play_mini.setImageResource(R.mipmap.av_play);
+                if(musicBound) {
+                    if (playbackPaused) {
+                        musicSrv.start();
+                        setInfoSong(musicSrv.getInfo());
+                        playbackPaused = false;
+                        btn_play_mini.setImageResource(R.mipmap.av_pause);
+                    } else {
+                        musicSrv.pausePlayer();
+                        playbackPaused = true;
+                        btn_play_mini.setImageResource(R.mipmap.av_play);
+                    }
                 }
             }
         });

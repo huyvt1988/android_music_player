@@ -60,6 +60,7 @@ public class MusicService extends Service implements
     }
 
     public void playSong() {
+//        player.stop();
         player.reset();
         playingSong = songList.get(songPosn);
 
@@ -93,8 +94,6 @@ public class MusicService extends Service implements
     @Override
     public void onDestroy() {
         super.onDestroy();
-//        player.stop();
-//        player.release();
         stopForeground(true);
     }
 
@@ -133,7 +132,7 @@ public class MusicService extends Service implements
         startForeground(NOTIFY_ID, not);
     }
 
-    public int getPosn() {
+    public int getCurrentPosn() {
         return player.getCurrentPosition();
     }
 
