@@ -28,7 +28,7 @@ public class MusicService extends Service implements
     private List<SongEntity> songList;
     private int songPosn;
     private final IBinder musicBind = new MusicBinder();
-    SongEntity playingSong;
+    private SongEntity playingSong;
     //notification id
     private static final int NOTIFY_ID = 1;
 
@@ -176,7 +176,10 @@ public class MusicService extends Service implements
     }
 
     public SongEntity getInfo() {
-        return songList.get(songPosn);
+        if (playingSong != null)
+            return playingSong;
+        else
+            return songList.get(songPosn);
     }
 
     public int getSongPosn() {

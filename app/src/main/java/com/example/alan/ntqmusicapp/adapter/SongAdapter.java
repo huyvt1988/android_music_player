@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.example.alan.ntqmusicapp.R;
 import com.example.alan.ntqmusicapp.model.ItemClickListener;
 import com.example.alan.ntqmusicapp.room.SongEntity;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -43,6 +44,8 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.SongViewHolder
 
         holder.txt_song_name.setText(song.getSong_name());
         holder.txt_song_singer.setText(song.getSinger());
+        Picasso.with(m_context).load(song.getImage_url())
+                .placeholder(R.mipmap.icon_song).error(R.mipmap.loading).into(holder.img_song_item);
     }
 
     @Override

@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -14,7 +13,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.alan.ntqmusicapp.R;
 import com.example.alan.ntqmusicapp.room.SongEntity;
@@ -22,31 +20,33 @@ import com.example.alan.ntqmusicapp.service.MusicService;
 import com.mikhaellopez.circularimageview.CircularImageView;
 
 
-public class ActivityPlayer extends AppCompatActivity {
-    private TextView txt_song_title, txt_lyric, txt_song_name_player, txt_singer_player, txt_time_song, txt_time_total;
+public class ActivityPlayer extends MyActivity {
+    private TextView txt_lyric, txt_song_name_player, txt_singer_player, txt_time_song, txt_time_total;
     private ImageView img_setting_player;
     private ImageButton btn_prev, btn_play, btn_next;
     private SeekBar skb_player;
-    private CircularImageView img_disk;
+    private static CircularImageView img_disk;
 
     private SongEntity songEntity;
 
     private boolean paused;
 
-    private MusicService musicSrv = ActivityListSong.musicSrv;
+    private MusicService musicSrv = ActivityListSong.getMusicSrv();
 
     private int posSong;
 
-    private boolean isBackGround = false;
+    private boolean isRunBackGround = false;
 
     private Handler handler = null;
 
     private Animation animation;
 
+//    public static boolean isActPlayStop;
+
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Toast.makeText(this, "onCreate-player", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, "onCreate-player", Toast.LENGTH_SHORT).show();
         setContentView(R.layout.lt_player);
         initControl();
         initData();
@@ -59,67 +59,58 @@ public class ActivityPlayer extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        Toast.makeText(this, "onStart-player", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, "onStart-player", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        Toast.makeText(this, "onResume-player", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, "onResume-player", Toast.LENGTH_SHORT).show();
         if (paused) {
             paused = false;
         }
 
-        if (ActivityListSong.isAPIList) {
+        if (ActivityListSong.isAPIList()) {
             //set lyric
-            txt_lyric.setText(ActivityListSong.songLyricList.get(musicSrv.getSongPosn()).getLyric());
+            txt_lyric.setText(ActivityListSong.getSongListLyric().get(musicSrv.getSongPosn()).getLyric());
             img_disk.setVisibility(View.INVISIBLE);
         } else {
             txt_lyric.setText("");
             img_disk.setVisibility(View.VISIBLE);
         }
 
-        //update status mini player
-//        if (musicSrv != null) {
-//            setInfoSong(musicSrv.getInfo());
-//        }
         if (ActivityListSong.playbackPaused) {
             btn_play.setImageResource(R.mipmap.av_play);
         } else {
             btn_play.setImageResource(R.mipmap.av_pause);
-            if (!ActivityListSong.isAPIList)
+            if (!ActivityListSong.isAPIList())
                 img_disk.startAnimation(animation);
         }
 
         //run on background
         SharedPreferences sharedPreferences = getSharedPreferences("setting", Context.MODE_PRIVATE);
-        isBackGround = sharedPreferences.getBoolean("isBackGround", false);
+        isRunBackGround = sharedPreferences.getBoolean("isRunBackGround", false);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        Toast.makeText(this, "onPause-player", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, "onPause-player", Toast.LENGTH_SHORT).show();
         paused = true;
 
-        if (!isBackGround) {
-//            musicSrv.pausePlayer();
-//            if (!ActivityListSong.playbackPaused) {
-//                ActivityListSong.playbackPaused = true;
-//            }
-        }
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        Toast.makeText(this, "onStop-player", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, "onStop-player", Toast.LENGTH_SHORT).show();
+
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Toast.makeText(this, "onDestroy-player", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, "onDestroy-player", Toast.LENGTH_SHORT).show();
     }
 
     private void initData() {
@@ -136,7 +127,6 @@ public class ActivityPlayer extends AppCompatActivity {
     }
 
     private void initControl() {
-        txt_song_title = findViewById(R.id.txt_song_title);
         txt_lyric = findViewById(R.id.txt_lyric);
         txt_song_name_player = findViewById(R.id.txt_song_name_player);
         txt_singer_player = findViewById(R.id.txt_singer_player);
@@ -162,12 +152,12 @@ public class ActivityPlayer extends AppCompatActivity {
         btn_play.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (ActivityListSong.musicBound) {
+                if (ActivityListSong.isMusicBound()) {
                     if (ActivityListSong.playbackPaused) {
                         musicSrv.start();
                         ActivityListSong.playbackPaused = false;
                         btn_play.setImageResource(R.mipmap.av_pause);
-                        if (!ActivityListSong.isAPIList)
+                        if (!ActivityListSong.isAPIList())
                             img_disk.startAnimation(animation);
                     } else {
                         musicSrv.pausePlayer();
@@ -182,13 +172,13 @@ public class ActivityPlayer extends AppCompatActivity {
         btn_next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (ActivityListSong.musicBound) {
+                if (ActivityListSong.isMusicBound()) {
                     musicSrv.playNext();
-                    if (!ActivityListSong.isAPIList)
+                    if (!ActivityListSong.isAPIList())
                         img_disk.startAnimation(animation);
                     //set lyric
-                    if (ActivityListSong.isAPIList) {
-                        txt_lyric.setText(ActivityListSong.songLyricList.get(musicSrv.getSongPosn()).getLyric());
+                    if (ActivityListSong.isAPIList()) {
+                        txt_lyric.setText(ActivityListSong.getSongListLyric().get(musicSrv.getSongPosn()).getLyric());
                     }
                     //play button
                     if (ActivityListSong.playbackPaused) {
@@ -202,13 +192,13 @@ public class ActivityPlayer extends AppCompatActivity {
         btn_prev.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (ActivityListSong.musicBound) {
+                if (ActivityListSong.isMusicBound()) {
                     musicSrv.playPrev();
-                    if (!ActivityListSong.isAPIList)
+                    if (!ActivityListSong.isAPIList())
                         img_disk.startAnimation(animation);
                     //set lyric
-                    if (ActivityListSong.isAPIList) {
-                        txt_lyric.setText(ActivityListSong.songLyricList.get(musicSrv.getSongPosn()).getLyric());
+                    if (ActivityListSong.isAPIList()) {
+                        txt_lyric.setText(ActivityListSong.getSongListLyric().get(musicSrv.getSongPosn()).getLyric());
                     }
                     if (ActivityListSong.playbackPaused) {
                         btn_play.setImageResource(R.mipmap.av_pause);
@@ -236,19 +226,19 @@ public class ActivityPlayer extends AppCompatActivity {
     }
 
     public void setInfoSong(SongEntity songEntity) {
-        txt_song_title.setText(songEntity.getSong_name());
         txt_song_name_player.setText(songEntity.getSong_name());
         txt_singer_player.setText(songEntity.getSinger());
     }
 
     private void setTimeTotal() {
-        if (musicSrv.isPng() && ActivityListSong.musicBound) {
+        if (musicSrv.isPng() && ActivityListSong.isMusicBound()) {
             txt_time_total.setText(milliSecondsToTimer((long) musicSrv.getDur()));
             skb_player.setMax(musicSrv.getDur());
         }
     }
 
     private void updateSongInterface() {
+        skb_player.setProgress(0);
         if (handler == null) {
             handler = new Handler();
             handler.postDelayed(new Runnable() {
@@ -295,4 +285,7 @@ public class ActivityPlayer extends AppCompatActivity {
         return finalTimerString;
     }
 
+    public static CircularImageView getImg_disk() {
+        return img_disk;
+    }
 }

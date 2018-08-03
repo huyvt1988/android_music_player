@@ -2,8 +2,6 @@ package com.example.alan.ntqmusicapp.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -17,13 +15,13 @@ import android.widget.TextView;
 import com.example.alan.ntqmusicapp.R;
 import com.example.alan.ntqmusicapp.adapter.SongAdapter;
 import com.example.alan.ntqmusicapp.controller.LyricAsyncTask;
-import com.example.alan.ntqmusicapp.entity.SongLyric;
 import com.example.alan.ntqmusicapp.model.ItemClickListener;
 import com.example.alan.ntqmusicapp.room.AppDatabase;
 import com.example.alan.ntqmusicapp.room.DataGenerator;
 import com.example.alan.ntqmusicapp.room.SongEntity;
 import com.example.alan.ntqmusicapp.service.MusicService;
 import com.example.alan.ntqmusicapp.service.MusicService.MusicBinder;
+import com.squareup.picasso.Picasso;
 
 import android.os.IBinder;
 import android.content.ComponentName;
@@ -31,35 +29,34 @@ import android.content.ServiceConnection;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
-public class ActivityListSong extends AppCompatActivity {
+public class ActivityListSong extends MyActivity {
     private ImageView img_setting_list, img_song_list;
-    private Button btn_sort_by_name, btn_sort_by_api;
+    private Button btn_sort_by_name, btn_sort_by_folder, btn_sort_by_api;
     private ImageButton btn_prev_mini, btn_play_mini, btn_next_mini;
     private RecyclerView revw_song;
     private TextView txt_song_name_list, txt_singer_list;
 
     AppDatabase database;
-    private static List<SongEntity> songList;
-    public static List<SongLyric> songLyricList;
+    private List<SongEntity> songList;
+    private List<SongEntity> songListFolder;
+    private static List<SongEntity> songListLyric;
+
     private SongAdapter songAdapter;
 
-    public static MusicService musicSrv;
+    private static MusicService musicSrv;
     private Intent playIntent;
-    public static boolean musicBound = false;
+    private static boolean musicBound = false;
 
     public static boolean paused = false, playbackPaused = true;
     private SongEntity songEntity;
-    private boolean isBackGround = false;
-    public static boolean isAPIList = false;
+    private static boolean isAPIList = false;
 
     public static final String API_LYRIC = "https://raw.githubusercontent.com/MrNinja/android_music_app_api/master/api/lyric/";
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 //        Toast.makeText(this, "onCreate", Toast.LENGTH_SHORT).show();
         setContentView(R.layout.lt_list_song);
@@ -92,10 +89,6 @@ public class ActivityListSong extends AppCompatActivity {
         } else {
             btn_play_mini.setImageResource(R.mipmap.av_pause);
         }
-
-        //run on background
-        SharedPreferences sharedPreferences = getSharedPreferences("setting", Context.MODE_PRIVATE);
-        isBackGround = sharedPreferences.getBoolean("isBackGround", false);
     }
 
     @Override
@@ -103,14 +96,13 @@ public class ActivityListSong extends AppCompatActivity {
         super.onPause();
 //        Toast.makeText(this, "onPause", Toast.LENGTH_SHORT).show();
         paused = true;
-
-        //background
     }
 
     @Override
     protected void onStop() {
         super.onStop();
 //        Toast.makeText(this, "onStop", Toast.LENGTH_SHORT).show();
+
     }
 
     @Override
@@ -155,8 +147,8 @@ public class ActivityListSong extends AppCompatActivity {
         btn_sort_by_name.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                isAPIList = false;
-                sort_by_name();
+                if (isAPIList)
+                    isAPIList = false;
                 songList = DataGenerator.with(database).getSongsByName();
                 if (songList.size() > 0) {
                     musicSrv.setList(songList);
@@ -166,18 +158,31 @@ public class ActivityListSong extends AppCompatActivity {
             }
         });
 
-
-        btn_sort_by_api.setOnClickListener(new View.OnClickListener() {
+        btn_sort_by_folder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                isAPIList = true;
-                songList = DataGenerator.with(database).getSongsByAPI();
+                if (isAPIList)
+                    isAPIList = false;
+                songList = DataGenerator.with(database).getSongsByFolder();
                 if (songList.size() > 0) {
                     musicSrv.setList(songList);
                     setRecycleViewData(songList);
                     setEventAdapter();
+                }
+            }
+        });
+
+        btn_sort_by_api.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!isAPIList)
+                    isAPIList = true;
+                if (songListLyric.size() > 0) {
+                    musicSrv.setList(songListLyric);
+                    setRecycleViewData(songListLyric);
+                    setEventAdapter();
                 } else {
-                    setRecycleViewData(songList);
+                    setRecycleViewData(songListLyric);
                 }
             }
         });
@@ -185,7 +190,7 @@ public class ActivityListSong extends AppCompatActivity {
         btn_next_mini.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(musicBound) {
+                if (musicBound) {
                     musicSrv.playNext();
                     setInfoSong(musicSrv.getInfo());
                     if (playbackPaused) {
@@ -211,7 +216,7 @@ public class ActivityListSong extends AppCompatActivity {
         btn_play_mini.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(musicBound) {
+                if (musicBound) {
                     if (playbackPaused) {
                         musicSrv.start();
                         setInfoSong(musicSrv.getInfo());
@@ -241,22 +246,24 @@ public class ActivityListSong extends AppCompatActivity {
                 songPicked(position);
             }
         });
-
         setEventAdapter();
     }
 
     private void initData() {
         database = AppDatabase.getAppDatabase(this);
+        //get song list by name
         songList = DataGenerator.with(database).getSongsByName();
 
-        //get lyric list
-        songLyricList = new ArrayList<>();
-        for (int i = 0; i < DataGenerator.with(database).getSongsByAPI().size(); i++) {
-            SongLyric songLyric = new SongLyric();
-            songLyric.setId(DataGenerator.with(database).getSongsByAPI().get(i).getId());
-            LyricAsyncTask asyncTask = new LyricAsyncTask(songLyric);
-            asyncTask.execute(API_LYRIC + DataGenerator.with(database).getSongsByAPI().get(i).getId());
-            songLyricList.add(songLyric);
+        //get song list by folder
+        songListFolder = DataGenerator.with(database).getSongsByFolder();
+
+        //get API list
+        songListLyric = DataGenerator.with(database).getSongsByAPI();
+        for (int i = 0; i < songListLyric.size(); i++) {
+            SongEntity songEntity = songListLyric.get(i);
+            LyricAsyncTask asyncTask = new LyricAsyncTask(songEntity);
+            asyncTask.execute(API_LYRIC + songEntity.getId());
+            songEntity.setImage_url(getListImageURL().get(i));
         }
     }
 
@@ -264,6 +271,7 @@ public class ActivityListSong extends AppCompatActivity {
         img_setting_list = findViewById(R.id.img_setting_list);
         img_song_list = findViewById(R.id.img_song_list);
         btn_sort_by_name = findViewById(R.id.btn_sort_by_name);
+        btn_sort_by_folder = findViewById(R.id.btn_sort_by_folder);
         btn_sort_by_api = findViewById(R.id.btn_sort_by_api);
         btn_prev_mini = findViewById(R.id.btn_prev_mini);
         btn_play_mini = findViewById(R.id.btn_play_mini);
@@ -305,14 +313,8 @@ public class ActivityListSong extends AppCompatActivity {
     public void setInfoSong(SongEntity songEntity) {
         txt_song_name_list.setText(songEntity.getSong_name());
         txt_singer_list.setText(songEntity.getSinger());
-    }
-
-    public void sort_by_name() {
-        Collections.sort(songList, new Comparator<SongEntity>() {
-            public int compare(SongEntity a, SongEntity b) {
-                return a.getSong_name().compareTo(b.getSong_name());
-            }
-        });
+        Picasso.with(this).load(songEntity.getImage_url())
+                .placeholder(R.mipmap.icon_song).error(R.mipmap.loading).into(img_song_list);
     }
 
     public void songPicked(int pos) {
@@ -332,5 +334,37 @@ public class ActivityListSong extends AppCompatActivity {
             }
 //            startService(playIntent);
         }
+    }
+
+    public List<String> getListImageURL() {
+        List<String> lisURL = new ArrayList<>();
+        lisURL.add("https://i.ytimg.com/vi/2MqYLezplqQ/default.jpg");
+        lisURL.add("https://avatar-nct.nixcdn.com/song/2018/03/10/7/0/c/b/1520688037080_640.jpg");
+        lisURL.add("https://d2tml28x3t0b85.cloudfront.net/tracks/artworks/000/348/988/original/d9a0a2.jpeg?1474466250");
+        lisURL.add("http://hocdanpiano.vn/wp-content/uploads/2015/09/816669.jpg");
+        lisURL.add("http://kenhnhaccho.com/thumb/resize/w/200/h/200/z/1/url.kenhnhac.vn/res/AVATAR/SONG/2018/3/20180327101240488_1.jpg");
+        lisURL.add("http://kenhnhaccho.com/thumb/resize/w/200/h/200/z/1/url.kenhnhac.vn/res/AVATAR/SONG/2018/3/20180327101240488_1.jpg");
+        lisURL.add("http://v2.cdn.nhac.vn/kv0puCNE4oNNfn7YhOpK/1489548494/v1/album/s1/0/0/26/27427.jpg");
+        lisURL.add("http://data.chiasenhac.com/data/cover/1/331.jpg");
+        lisURL.add("https://avatar-nct.nixcdn.com/song/2018/04/20/e/d/8/5/1524195310927_640.jpg");
+        lisURL.add("https://avatar-nct.nixcdn.com/song/2018/04/20/e/d/8/5/1524195406609_640.jpg");
+
+        return lisURL;
+    }
+
+    public static List<SongEntity> getSongListLyric() {
+        return songListLyric;
+    }
+
+    public static MusicService getMusicSrv() {
+        return musicSrv;
+    }
+
+    public static boolean isMusicBound() {
+        return musicBound;
+    }
+
+    public static boolean isAPIList() {
+        return isAPIList;
     }
 }

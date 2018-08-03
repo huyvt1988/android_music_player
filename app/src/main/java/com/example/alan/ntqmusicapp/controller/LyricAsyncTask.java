@@ -5,13 +5,14 @@ import android.os.AsyncTask;
 import com.example.alan.ntqmusicapp.entity.Lyric;
 import com.example.alan.ntqmusicapp.entity.SongLyric;
 import com.example.alan.ntqmusicapp.model.Commons;
+import com.example.alan.ntqmusicapp.room.SongEntity;
 import com.google.gson.Gson;
 
 public class LyricAsyncTask extends AsyncTask<String, Void, String> {
-    SongLyric songLyric;
+    SongEntity songEntity;
 
-    public LyricAsyncTask(SongLyric songLyric) {
-        this.songLyric = songLyric;
+    public LyricAsyncTask(SongEntity songEntity) {
+        this.songEntity = songEntity;
     }
 
     @Override
@@ -26,7 +27,7 @@ public class LyricAsyncTask extends AsyncTask<String, Void, String> {
             e.printStackTrace();
         }
         if (!result.isEmpty()) {
-            songLyric.setLyric(result);
+            songEntity.setLyric(result);
         }
         return result;
     }

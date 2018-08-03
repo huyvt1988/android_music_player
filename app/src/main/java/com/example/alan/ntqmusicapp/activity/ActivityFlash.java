@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -21,10 +22,11 @@ import com.example.alan.ntqmusicapp.room.AppDatabase;
 import com.example.alan.ntqmusicapp.room.DataGenerator;
 import com.example.alan.ntqmusicapp.room.SongEntity;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ActivityFlash extends Activity {
+public class ActivityFlash extends MyActivity {
     private List<SongEntity> songList;
     AppDatabase database;
 
@@ -33,7 +35,7 @@ public class ActivityFlash extends Activity {
     public static final String API_LIST_SONG = "https://raw.githubusercontent.com/MrNinja/android_music_app_api/master/api/list_music";
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.lt_flash);
 
@@ -106,13 +108,16 @@ public class ActivityFlash extends Activity {
             int titleColumn = musicCursor.getColumnIndex(android.provider.MediaStore.Audio.Media.TITLE);
             int idColumn = musicCursor.getColumnIndex(android.provider.MediaStore.Audio.Media._ID);
             int artistColumn = musicCursor.getColumnIndex(android.provider.MediaStore.Audio.Media.ARTIST);
+            int data = musicCursor.getColumnIndex(MediaStore.Audio.Media.DATA);
             //add songs to list
             do {
                 long thisIdLong = musicCursor.getLong(idColumn);
-                String thisId = String.valueOf(musicCursor.getLong(idColumn));
+                String thisId = String.valueOf(thisIdLong);
                 String thisTitle = musicCursor.getString(titleColumn);
                 String thisArtist = musicCursor.getString(artistColumn);
-                songList.add(new SongEntity(thisId, thisIdLong, thisTitle, thisArtist));
+                String thisData = musicCursor.getString(data);
+                String thisFolder = new File(new File(thisData).getParent()).getName();
+                songList.add(new SongEntity(thisId, thisIdLong, thisTitle, thisArtist, thisFolder));
             }
             while (musicCursor.moveToNext());
         }

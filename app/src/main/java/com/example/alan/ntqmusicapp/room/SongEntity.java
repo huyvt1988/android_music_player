@@ -18,6 +18,12 @@ public class SongEntity implements Serializable{
 
     private String singer;
 
+    private String lyric;
+
+    private String folder;
+
+    private String image_url;
+
     public SongEntity() {
     }
 
@@ -26,6 +32,14 @@ public class SongEntity implements Serializable{
         this.id_long = id_long;
         this.song_name = song_name;
         this.singer = singer;
+    }
+
+    public SongEntity(@NonNull String id, long id_long, String song_name, String singer, String folder) {
+        this.id = id;
+        this.id_long = id_long;
+        this.song_name = song_name;
+        this.singer = singer;
+        this.folder = folder;
     }
 
     @NonNull
@@ -59,5 +73,29 @@ public class SongEntity implements Serializable{
 
     public void setId_long(long id_long) {
         this.id_long = id_long;
+    }
+
+    public String getLyric() {
+        return lyric;
+    }
+
+    public void setLyric(String lyric) {
+        this.lyric = lyric;
+    }
+
+    public String getFolder() {
+        return folder;
+    }
+
+    public void setFolder(String folder) {
+        this.folder = folder;
+    }
+
+    public String getImage_url() {
+        return image_url;
+    }
+
+    public void setImage_url(String image_url) {
+        this.image_url = image_url;
     }
 }

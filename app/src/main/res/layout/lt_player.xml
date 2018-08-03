@@ -18,13 +18,30 @@
             android:layout_height="wrap_content"
             android:paddingEnd="10dp">
 
-            <TextView
-                android:id="@+id/txt_song_title"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Song title"
-                android:textColor="@color/white"
-                android:textSize="@dimen/TitleToolbar" />
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/txt_song_name_player"
+                    android:layout_width="250sp"
+                    android:layout_height="wrap_content"
+                    android:text="Song name"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/SongTitle"
+                    android:singleLine="true"/>
+
+                <TextView
+                    android:id="@+id/txt_singer_player"
+                    android:layout_width="250sp"
+                    android:layout_height="wrap_content"
+                    android:text="Singer"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/SongSinger"
+                    android:singleLine="true"/>
+            </LinearLayout>
+
 
             <ImageView
                 android:id="@+id/img_setting_player"
@@ -40,27 +57,28 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="0sp"
-            android:layout_weight="2"
-            >
+            android:layout_weight="2">
+
             <ScrollView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:paddingBottom="20sp"
                 android:paddingLeft="40sp"
                 android:paddingRight="40sp"
                 android:paddingTop="20sp"
-                android:paddingBottom="20sp"
                 android:scrollbars="none">
 
                 <TextView
                     android:id="@+id/txt_lyric"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:gravity="center"
                     android:textColor="@color/white"
-                    android:textSize="@dimen/SongTitle"
-                    android:gravity="center"/>
+                    android:textSize="@dimen/SongTitle" />
             </ScrollView>
 
             <com.mikhaellopez.circularimageview.CircularImageView
@@ -69,11 +87,10 @@
                 android:layout_height="250sp"
                 android:layout_centerInParent="true"
                 android:src="@mipmap/disk"
-                app:civ_border_width="5sp"
                 app:civ_border_color="#b6bae8"
+                app:civ_border_width="5sp"
                 app:civ_shadow="true"
-                app:civ_shadow_color="#ffffff"
-                />
+                app:civ_shadow_color="#ffffff" />
         </RelativeLayout>
 
         <LinearLayout
@@ -83,28 +100,15 @@
             android:layout_weight="1"
             android:orientation="vertical">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="0sp"
-                android:layout_weight="2"
-                android:gravity="center"
-                android:orientation="vertical">
-                    <TextView
-                        android:id="@+id/txt_song_name_player"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Song name"
-                        android:textColor="@color/white"
-                        android:textSize="@dimen/SongTitle" />
+            <!--<LinearLayout-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="0sp"-->
+                <!--android:layout_weight="2"-->
+                <!--android:gravity="center"-->
+                <!--android:orientation="vertical">-->
 
-                    <TextView
-                        android:id="@+id/txt_singer_player"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Singer"
-                        android:textColor="@color/white"
-                        android:textSize="@dimen/SongSinger" />
-            </LinearLayout>
+
+            <!--</LinearLayout>-->
 
             <RelativeLayout
                 android:layout_width="match_parent"

@@ -18,21 +18,21 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingEnd="10dp">
+
             <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:text="Music Player"
                 android:textColor="@color/white"
-                android:textSize="@dimen/TitleToolbar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:textSize="@dimen/TitleToolbar" />
 
             <ImageView
                 android:id="@+id/img_setting_list"
-                android:src="@mipmap/setting_icon"
-                android:foregroundGravity="right"
                 android:layout_width="35dp"
                 android:layout_height="35dp"
                 android:layout_alignParentRight="true"
-                />
+                android:foregroundGravity="right"
+                android:src="@mipmap/setting_icon" />
         </RelativeLayout>
     </Toolbar>
 
@@ -45,8 +45,14 @@
             android:layout_height="wrap_content"
             android:layout_width="0dp"
             android:layout_weight="1"
-            android:text="Sort by name"
+            android:text="Name"
             />
+        <Button
+            android:id="@+id/btn_sort_by_folder"
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:text="Folder"/>
         <Button
             android:id="@+id/btn_sort_by_api"
             android:layout_height="wrap_content"

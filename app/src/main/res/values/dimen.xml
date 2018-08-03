@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="TitleToolbar">20sp</dimen>
+    <dimen name="TitleToolbar">25sp</dimen>
     <dimen name="SongTitle">15sp</dimen>
     <dimen name="SongSinger">15sp</dimen>
+    <dimen name="SongPlayer">15sp</dimen>
 </resources>

@@ -41,6 +41,12 @@ public class DataGenerator {
         return dataBase.songDao().getSongsByName();
     }
 
+    public List<SongEntity> getSongsByFolder() {
+        if (dataBase == null)
+            return null;
+        return dataBase.songDao().getSongsByFolder();
+    }
+
     public List<SongEntity> getSongsByAPI() {
         if (dataBase == null)
             return null;
