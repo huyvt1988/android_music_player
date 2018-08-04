@@ -66,10 +66,8 @@ public class ActivityPlayer extends MyActivity {
 
         if (ActivityListSong.isAPIList()) {
             //set lyric
-//            txt_lyric.setText(ActivityListSong.getSongListLyric().get(musicSrv.getSongPosn()).getLyric());
             img_disk.setVisibility(View.INVISIBLE);
         } else {
-//            txt_lyric.setText("");
             img_disk.setVisibility(View.VISIBLE);
         }
 
@@ -107,13 +105,6 @@ public class ActivityPlayer extends MyActivity {
     private void initData() {
         //animation
         animation = AnimationUtils.loadAnimation(this, R.anim.disk_rotate);
-
-        //get data
-        if (getIntent().getBundleExtra("bundle") != null) {
-            Bundle bundle = getIntent().getBundleExtra("bundle");
-            songEntity = (SongEntity) bundle.getSerializable("songEntity");
-            posSong = getIntent().getBundleExtra("bundle").getInt("position");
-        }
     }
 
     private void initControl() {

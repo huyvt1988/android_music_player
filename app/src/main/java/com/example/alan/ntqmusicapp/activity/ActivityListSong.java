@@ -284,11 +284,6 @@ public class ActivityListSong extends MyActivity {
             @Override
             public void OnClickListener(int position) {
                 Intent intent = new Intent(ActivityListSong.this, ActivityPlayer.class);
-                SongEntity songEntity = songList.get(position);
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("songEntity", songEntity);
-                bundle.putInt("position", position);
-                intent.putExtra("bundle", bundle);
                 startActivity(intent);
 
                 //play song
