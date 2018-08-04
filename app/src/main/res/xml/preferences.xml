@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="Music setting">
+        <SwitchPreferenceCompat
+            android:defaultValue="true"
+            android:key="RunBackground"
+            android:summaryOff="Disable"
+            android:summaryOn="Enable"
+            android:title="Run music background" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="About">
+        <Preference android:summary="@string/about" />
+    </PreferenceCategory>
+</PreferenceScreen>

@@ -14,7 +14,7 @@ import android.widget.TextView;
 
 import com.example.alan.ntqmusicapp.R;
 import com.example.alan.ntqmusicapp.adapter.SongAdapter;
-import com.example.alan.ntqmusicapp.controller.LyricAsyncTask;
+import com.example.alan.ntqmusicapp.controller.APILyricAsyncTask;
 import com.example.alan.ntqmusicapp.model.ItemClickListener;
 import com.example.alan.ntqmusicapp.room.AppDatabase;
 import com.example.alan.ntqmusicapp.room.DataGenerator;
@@ -38,7 +38,7 @@ public class ActivityListSong extends MyActivity {
     private RecyclerView revw_song;
     private TextView txt_song_name_list, txt_singer_list;
 
-    AppDatabase database;
+    private AppDatabase database;
     private List<SongEntity> songList;
     private List<SongEntity> songListFolder;
     private static List<SongEntity> songListLyric;
@@ -50,7 +50,6 @@ public class ActivityListSong extends MyActivity {
     private static boolean musicBound = false;
 
     public static boolean paused = false, playbackPaused = true;
-    private SongEntity songEntity;
     private static boolean isAPIList = false;
 
     public static final String API_LYRIC = "https://raw.githubusercontent.com/MrNinja/android_music_app_api/master/api/lyric/";
@@ -111,9 +110,8 @@ public class ActivityListSong extends MyActivity {
 //        Toast.makeText(this, "onDestroy", Toast.LENGTH_SHORT).show();
         if (musicBound) {
             this.unbindService(musicConnection);
-            Toast.makeText(ActivityListSong.this, "Service Un-Binded", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(ActivityListSong.this, "Service Un-Binded", Toast.LENGTH_SHORT).show();
         }
-//        this.stopService(playIntent);
     }
 
     //connect to the service
@@ -151,9 +149,7 @@ public class ActivityListSong extends MyActivity {
                     isAPIList = false;
                 songList = DataGenerator.with(database).getSongsByName();
                 if (songList.size() > 0) {
-                    musicSrv.setList(songList);
-                    setRecycleViewData(songList);
-                    setEventAdapter();
+                    setSongListApp(songList);
                 }
             }
         });
@@ -165,9 +161,7 @@ public class ActivityListSong extends MyActivity {
                     isAPIList = false;
                 songList = DataGenerator.with(database).getSongsByFolder();
                 if (songList.size() > 0) {
-                    musicSrv.setList(songList);
-                    setRecycleViewData(songList);
-                    setEventAdapter();
+                    setSongListApp(songList);
                 }
             }
         });
@@ -178,9 +172,7 @@ public class ActivityListSong extends MyActivity {
                 if (!isAPIList)
                     isAPIList = true;
                 if (songListLyric.size() > 0) {
-                    musicSrv.setList(songListLyric);
-                    setRecycleViewData(songListLyric);
-                    setEventAdapter();
+                    setSongListApp(songListLyric);
                 } else {
                     setRecycleViewData(songListLyric);
                 }
@@ -261,7 +253,7 @@ public class ActivityListSong extends MyActivity {
         songListLyric = DataGenerator.with(database).getSongsByAPI();
         for (int i = 0; i < songListLyric.size(); i++) {
             SongEntity songEntity = songListLyric.get(i);
-            LyricAsyncTask asyncTask = new LyricAsyncTask(songEntity);
+            APILyricAsyncTask asyncTask = new APILyricAsyncTask(songEntity);
             asyncTask.execute(API_LYRIC + songEntity.getId());
             songEntity.setImage_url(getListImageURL().get(i));
         }
@@ -299,7 +291,7 @@ public class ActivityListSong extends MyActivity {
                 intent.putExtra("bundle", bundle);
                 startActivity(intent);
 
-                //play
+                //play song
                 songPicked(position);
             }
         });
@@ -317,6 +309,12 @@ public class ActivityListSong extends MyActivity {
                 .placeholder(R.mipmap.icon_song).error(R.mipmap.loading).into(img_song_list);
     }
 
+    public void setSongListApp(List<SongEntity> songList) {
+            musicSrv.setList(songList);
+            setRecycleViewData(songList);
+            setEventAdapter();
+    }
+
     public void songPicked(int pos) {
         musicSrv.setSong(pos);
         musicSrv.playSong();
@@ -330,9 +328,8 @@ public class ActivityListSong extends MyActivity {
             playIntent = new Intent(this, MusicService.class);
             if (!musicBound) {
                 bindService(playIntent, musicConnection, Context.BIND_AUTO_CREATE);
-                Toast.makeText(ActivityListSong.this, "bindService", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(ActivityListSong.this, "bindService", Toast.LENGTH_SHORT).show();
             }
-//            startService(playIntent);
         }
     }
 

@@ -1,9 +1,11 @@
 package com.example.alan.ntqmusicapp.activity;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.preference.PreferenceManager;
+
+import com.example.alan.ntqmusicapp.R;
 
 public class MyActivity extends AppCompatActivity {
 
@@ -29,8 +31,10 @@ public class MyActivity extends AppCompatActivity {
         }
         isScrInFg = true;
 
-        sharedPreferences = getSharedPreferences("setting", Context.MODE_PRIVATE);
-        isRunBackGround = sharedPreferences.getBoolean("isRunBackGround", false);
+        //RunBackGround
+        PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        isRunBackGround = sharedPreferences.getBoolean(ActivitySetting.KEY_RUN_BACKGROUND_SWITCH, false);
 
         super.onStart();
     }
@@ -51,16 +55,15 @@ public class MyActivity extends AppCompatActivity {
     }
 
     public void onAppPause() {
-        if(!isRunBackGround && ActivityListSong.isMusicBound()) {
-            ActivityListSong.getMusicSrv().pausePlayer();
-            ActivityPlayer.getImg_disk().clearAnimation();
-            if(!ActivityListSong.playbackPaused)
+        isRunBackGround = sharedPreferences.getBoolean(ActivitySetting.KEY_RUN_BACKGROUND_SWITCH, false);
+        if (!isRunBackGround && ActivityListSong.isMusicBound()) {
+            if (ActivityListSong.getMusicSrv().isPng())
+                ActivityListSong.getMusicSrv().pausePlayer();
+            if (ActivityPlayer.getImg_disk() != null)
+                ActivityPlayer.getImg_disk().clearAnimation();
+            if (!ActivityListSong.playbackPaused)
                 ActivityListSong.playbackPaused = true;
 
         }
-    }
-
-    public static SharedPreferences getSharedPreferences() {
-        return sharedPreferences;
     }
 }

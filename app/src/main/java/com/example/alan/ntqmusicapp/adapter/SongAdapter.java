@@ -17,16 +17,16 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 public class SongAdapter extends RecyclerView.Adapter<SongAdapter.SongViewHolder> {
-    ItemClickListener itemClickListener;
-    Context m_context;
-    List<SongEntity> songList;
+    private ItemClickListener itemClickListener;
+    private Context m_context;
+    private List<SongEntity> songList;
 
     public SongAdapter(Context m_context, List<SongEntity> songList) {
         this.m_context = m_context;
         this.songList = songList;
     }
 
-    public void setOnClickListener(ItemClickListener itemClickListener){
+    public void setOnClickListener(ItemClickListener itemClickListener) {
         this.itemClickListener = itemClickListener;
     }
 
@@ -45,7 +45,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.SongViewHolder
         holder.txt_song_name.setText(song.getSong_name());
         holder.txt_song_singer.setText(song.getSinger());
         Picasso.with(m_context).load(song.getImage_url())
-                .placeholder(R.mipmap.icon_song).error(R.mipmap.loading).into(holder.img_song_item);
+                .placeholder(R.mipmap.icon_song).error(R.mipmap.icon_song).into(holder.img_song_item);
     }
 
     @Override
@@ -59,9 +59,9 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.SongViewHolder
 
         public SongViewHolder(View itemView) {
             super(itemView);
-            img_song_item = (ImageView) itemView.findViewById(R.id.img_song_item);
-            txt_song_name = (TextView) itemView.findViewById(R.id.txt_song_name);
-            txt_song_singer = (TextView) itemView.findViewById(R.id.txt_song_singer);
+            img_song_item = itemView.findViewById(R.id.img_song_item);
+            txt_song_name = itemView.findViewById(R.id.txt_song_name);
+            txt_song_singer = itemView.findViewById(R.id.txt_song_singer);
 
             itemView.setOnClickListener(this);
         }

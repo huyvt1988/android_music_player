@@ -1,7 +1,6 @@
 package com.example.alan.ntqmusicapp.activity;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -26,7 +25,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ActivityFlash extends MyActivity {
+public class ActivitySplash extends MyActivity {
     private List<SongEntity> songList;
     AppDatabase database;
 
@@ -41,10 +40,10 @@ public class ActivityFlash extends MyActivity {
 
         songList = new ArrayList<>();
         //check permission
-        int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
 
         if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUEST_READ_MEDIA);
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUEST_READ_MEDIA);
         } else {
             createDatabase();
         }
@@ -88,7 +87,7 @@ public class ActivityFlash extends MyActivity {
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    Intent intent = new Intent(ActivityFlash.this, ActivityListSong.class);
+                    Intent intent = new Intent(ActivitySplash.this, ActivityListSong.class);
                     startActivity(intent);
                     finish();
                 }
@@ -96,7 +95,6 @@ public class ActivityFlash extends MyActivity {
         }
     }
 
-    //method to retrieve song info from device
     public void getSongList() {
         //query external audio
         ContentResolver musicResolver = getContentResolver();
@@ -135,8 +133,8 @@ public class ActivityFlash extends MyActivity {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            Toast.makeText(ActivityFlash.this, "External Data loaded!", Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(ActivityFlash.this, ActivityListSong.class);
+            Toast.makeText(ActivitySplash.this, "External Data loaded!", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(ActivitySplash.this, ActivityListSong.class);
             startActivity(intent);
         }
     }

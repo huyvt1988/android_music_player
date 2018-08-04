@@ -1,8 +1,6 @@
 package com.example.alan.ntqmusicapp.activity;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -35,13 +33,9 @@ public class ActivityPlayer extends MyActivity {
 
     private int posSong;
 
-    private boolean isRunBackGround = false;
-
     private Handler handler = null;
 
     private Animation animation;
-
-//    public static boolean isActPlayStop;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -72,10 +66,10 @@ public class ActivityPlayer extends MyActivity {
 
         if (ActivityListSong.isAPIList()) {
             //set lyric
-            txt_lyric.setText(ActivityListSong.getSongListLyric().get(musicSrv.getSongPosn()).getLyric());
+//            txt_lyric.setText(ActivityListSong.getSongListLyric().get(musicSrv.getSongPosn()).getLyric());
             img_disk.setVisibility(View.INVISIBLE);
         } else {
-            txt_lyric.setText("");
+//            txt_lyric.setText("");
             img_disk.setVisibility(View.VISIBLE);
         }
 
@@ -87,9 +81,6 @@ public class ActivityPlayer extends MyActivity {
                 img_disk.startAnimation(animation);
         }
 
-        //run on background
-        SharedPreferences sharedPreferences = getSharedPreferences("setting", Context.MODE_PRIVATE);
-        isRunBackGround = sharedPreferences.getBoolean("isRunBackGround", false);
     }
 
     @Override
@@ -123,7 +114,6 @@ public class ActivityPlayer extends MyActivity {
             songEntity = (SongEntity) bundle.getSerializable("songEntity");
             posSong = getIntent().getBundleExtra("bundle").getInt("position");
         }
-
     }
 
     private void initControl() {
@@ -176,10 +166,7 @@ public class ActivityPlayer extends MyActivity {
                     musicSrv.playNext();
                     if (!ActivityListSong.isAPIList())
                         img_disk.startAnimation(animation);
-                    //set lyric
-                    if (ActivityListSong.isAPIList()) {
-                        txt_lyric.setText(ActivityListSong.getSongListLyric().get(musicSrv.getSongPosn()).getLyric());
-                    }
+
                     //play button
                     if (ActivityListSong.playbackPaused) {
                         btn_play.setImageResource(R.mipmap.av_pause);
@@ -196,10 +183,7 @@ public class ActivityPlayer extends MyActivity {
                     musicSrv.playPrev();
                     if (!ActivityListSong.isAPIList())
                         img_disk.startAnimation(animation);
-                    //set lyric
-                    if (ActivityListSong.isAPIList()) {
-                        txt_lyric.setText(ActivityListSong.getSongListLyric().get(musicSrv.getSongPosn()).getLyric());
-                    }
+
                     if (ActivityListSong.playbackPaused) {
                         btn_play.setImageResource(R.mipmap.av_pause);
                         ActivityListSong.playbackPaused = false;
@@ -228,6 +212,7 @@ public class ActivityPlayer extends MyActivity {
     public void setInfoSong(SongEntity songEntity) {
         txt_song_name_player.setText(songEntity.getSong_name());
         txt_singer_player.setText(songEntity.getSinger());
+        txt_lyric.setText(songEntity.getLyric());
     }
 
     private void setTimeTotal() {
@@ -255,10 +240,6 @@ public class ActivityPlayer extends MyActivity {
         }
     }
 
-    /**
-     * Function to convert milliseconds time to Timer Format
-     * Hours:Minutes:Seconds
-     */
     public String milliSecondsToTimer(long milliseconds) {
         String finalTimerString = "";
         String secondsString = "";

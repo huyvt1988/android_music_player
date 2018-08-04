@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">NTQ Music App</string>
+    <string name="about">My Music
+    • Listen to albums and songs you’ve purchased from Amazon – MP3 or AutoRip CDs/Vinyl. Your Amazon purchases are stored in the Amazon cloud*
+    • Play albums and songs already stored on your Android device. Download songs using your device’s storage or an SD card and seamlessly integrate them into your streaming library</string>
+
 </resources>

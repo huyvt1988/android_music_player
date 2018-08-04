@@ -1,13 +1,9 @@
 package com.example.alan.ntqmusicapp.controller;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.widget.Toast;
 
-import com.example.alan.ntqmusicapp.R;
-import com.example.alan.ntqmusicapp.activity.ActivityListSong;
 import com.example.alan.ntqmusicapp.model.Commons;
 import com.example.alan.ntqmusicapp.room.AppDatabase;
 import com.example.alan.ntqmusicapp.room.DataGenerator;

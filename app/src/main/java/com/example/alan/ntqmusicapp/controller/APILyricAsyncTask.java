@@ -3,15 +3,14 @@ package com.example.alan.ntqmusicapp.controller;
 import android.os.AsyncTask;
 
 import com.example.alan.ntqmusicapp.entity.Lyric;
-import com.example.alan.ntqmusicapp.entity.SongLyric;
 import com.example.alan.ntqmusicapp.model.Commons;
 import com.example.alan.ntqmusicapp.room.SongEntity;
 import com.google.gson.Gson;
 
-public class LyricAsyncTask extends AsyncTask<String, Void, String> {
+public class APILyricAsyncTask extends AsyncTask<String, Void, String> {
     SongEntity songEntity;
 
-    public LyricAsyncTask(SongEntity songEntity) {
+    public APILyricAsyncTask(SongEntity songEntity) {
         this.songEntity = songEntity;
     }
 
