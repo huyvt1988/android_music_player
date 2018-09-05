@@ -24,10 +24,13 @@ Viết một App Android là một trình nghe nhạc với mô tả như bên d
 - Là màn hình chính được mở lên khi ứng dụng được mở lên.
 
 - Màn hình có ba phần:
+
     +  Thanh tiêu đề có chứa tên chương trình và nút setting để dẫn tới màn hình setting.
+    
     +  Danh sách bài hát là một RecycleView hiển thị danh sách các file nhạc. 
         Có 2 cách để xem các file nhạc là xem theo tên file và xem theo thư mục. 
         Khi người dùng bấm vào một bài nhạc, di chuyển đến màn hình hiển thị trình chơi nhạc.
+        
     + Trình nghe nhạc thu nhỏ bao gồm ba nút. 
       -- Nút previous di chuyển về bài nhạc trước trong danh sách sắp xếp theo tên file. 
       -- Nút next di chuyển đến bài hát tiếp theo trong danh sách sắp xếp theo tên file. 
@@ -37,7 +40,9 @@ Viết một App Android là một trình nghe nhạc với mô tả như bên d
 
 ② Màn hình hiển thị trình chơi nhạc.
 - Là màn hình hiện ra khi người dùng bấm vào một bài nhạc trong danh sách bài nhạc hoặc bấm vào tên bài nhạc trên thanh notification.
+
     -- Trong trường hợp người dùng đến từ màn hình hiển thị danh sách bài nhạc. Bài nhạc sẽ được phát. 
+    
     -- Trong trường hợp đến từ thanh notification. Trạng thái phát nhạc được giữ nguyên.
 
 - Màn hình có ba phần: 
