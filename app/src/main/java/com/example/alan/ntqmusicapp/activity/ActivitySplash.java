@@ -36,7 +36,7 @@ public class ActivitySplash extends MyActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.lt_flash);
+        setContentView(R.layout.lt_splash);
 
         songList = new ArrayList<>();
         //check permission
