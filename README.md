@@ -53,18 +53,29 @@ Viết một App Android là một trình nghe nhạc với mô tả như bên d
 
 ③ Màn hình setting.
 - Màn hình setting bao gồm các chức năng cài đặt như sau:
+
 + Tuỳ chọn cho phép nghe nhạc khi ẩn ứng dụng xuống hay không.
+
 + Hiển thị thông tin nhà phát triển.
 
 ---------------------------------------------------------------------
 Các điểm cần chú ý về dự án:
 ・Hiển thị giao diện tuỳ ý tưởng/ý thích.
+
 ・Hiển thị được danh sách các bài hát có trong máy.
+
 ・Chạy được bài hát. (Không cần xử lý các kết nối âm thanh có dây/không dây - tai nghe, loa...)
+
 ・Chạy được bài hát dưới background dựa theo tuỳ chọn trong màn hình settings.
+
 ・Khi bản nhạc được chạy, hiển thị điều khiển trên khung notification của thiết bị.
+
 ・Kết nối được với server thông qua HTTP Request.
+
 ・Định nghĩa được dữ liệu bằng Room.
+
 ・Truy cập dữ liệu của Room bằng DAO.
+
 ・Sử dụng xml để lưu trữ thông tin cài đặt.
+
 ・Hỗ trợ xoay màn hình.
