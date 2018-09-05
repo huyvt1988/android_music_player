@@ -19,6 +19,7 @@ Viết một App Android là một trình nghe nhạc với mô tả như bên d
 　(dự kiến là làm trong vòng 20h).
 
 ◼︎ Màn hình (Tổng số 3 màn hình):
+
 ① Màn hình hiển thị danh sách bài nhạc.
 - Là màn hình chính được mở lên khi ứng dụng được mở lên.
 
