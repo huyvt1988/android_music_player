@@ -36,7 +36,7 @@ Viết một App Android là một trình nghe nhạc với mô tả như bên d
 
 ② Màn hình hiển thị trình chơi nhạc.
 - Là màn hình hiện ra khi người dùng bấm vào một bài nhạc trong danh sách bài nhạc hoặc bấm vào tên bài nhạc trên thanh notification.
-   -- Trong trường hợp người dùng đến từ màn hình hiển thị danh sách bài nhạc. Bài nhạc sẽ được phát. 
+    -- Trong trường hợp người dùng đến từ màn hình hiển thị danh sách bài nhạc. Bài nhạc sẽ được phát. 
     -- Trong trường hợp đến từ thanh notification. Trạng thái phát nhạc được giữ nguyên.
 
 - Màn hình có ba phần: 
