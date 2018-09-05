@@ -21,6 +21,7 @@ Viết một App Android là một trình nghe nhạc với mô tả như bên d
 ◼︎ Màn hình (Tổng số 3 màn hình):
 
 ① Màn hình hiển thị danh sách bài nhạc.
+
 - Là màn hình chính được mở lên khi ứng dụng được mở lên.
 
 - Màn hình có ba phần:
@@ -32,9 +33,13 @@ Viết một App Android là một trình nghe nhạc với mô tả như bên d
         Khi người dùng bấm vào một bài nhạc, di chuyển đến màn hình hiển thị trình chơi nhạc.
         
     + Trình nghe nhạc thu nhỏ bao gồm ba nút. 
+    
       -- Nút previous di chuyển về bài nhạc trước trong danh sách sắp xếp theo tên file. 
+      
       -- Nút next di chuyển đến bài hát tiếp theo trong danh sách sắp xếp theo tên file. 
+      
       -- Nút play được hiển thị khi bài nhạc đang được phát, nếu không, hiển thị nút pause. 
+      
       Khi bấm vào nút play/pause, trạng thái của bài hát sẽ được thay đổi. 
       Ảnh bìa được lấy từ API. Tiêu đề bài hát chính là tên của bài hát hiện tại.
 
