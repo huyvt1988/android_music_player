@@ -51,9 +51,13 @@ Viết một App Android là một trình nghe nhạc với mô tả như bên d
     -- Trong trường hợp đến từ thanh notification. Trạng thái phát nhạc được giữ nguyên.
 
 - Màn hình có ba phần: 
+
     +  Thanh tiêu đề có chứa tên của bài hát và nút setting để dẫn tới màn hình setting.
+    
     +  Lời bài hát là dữ liệu được lấy từ trên API. 
+    
         Lời bài hát sẽ chỉ load một lần khi ứng dụng còn tồn tại. Nếu ứng dụng bị kill đi (Bởi người dùng hoặc OS), lời bài hát sẽ được load lại.
+        
     +  Trình nghe nhạc bao gồm ba nút. (mô tả giống như của phần ① nói trên)
 
 ③ Màn hình setting.
